@@ -89,14 +89,14 @@ $ jupyter nbextension enable --py widgetsnbextension
 
 #### Repositorio
 
-Para [clonar](https://docs.github.com/es/repositories/creating-and-managing-repositories/cloning-a-repository) el repositorio `cnosolar` se recomienda usar el software [GitHub Desktop](https://desktop.github.com/). La url del repositorio es: [andresgm/cno_solar](https://github.com/andresgm/cno_solar).
+Para [clonar](https://docs.github.com/es/repositories/creating-and-managing-repositories/cloning-a-repository) el repositorio `cnosolar` se recomienda usar el software [GitHub Desktop](https://desktop.github.com/). La url del repositorio es: [andresgm/cno_solar](https://git.cno.org.co/andresgm/cno_solar).
 
 Otra opción es desde el terminal con en el ambiente activado; para esto ejecute:
 
-```python
-$ git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
+```bash
+$ git clone https://git.cno.org.co/andresgm/cno_solar
 ```
 
 ## Licencia
 
-MIT License, dispuesta en el archivo `LICENSE`.
+GNU AFFERO GENERAL PUBLIC LICENSE v3.0, dispuesta en el archivo `LICENSE`.
