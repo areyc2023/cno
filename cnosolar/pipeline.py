@@ -165,7 +165,7 @@ def run(system_configuration, data, availability, energy_units):
             module_tec = None
 
         if len(check) > 0:            
-            for i in [module_tec, 'mono','multi','cis','cigs','cdte','amorphous']:
+            for i in [module_tec, 'monoSi','multiSi','polySi','cis','cigs','cdte','amorphous']:
                 try:
                     I_L_ref, I_o_ref, R_s, R_sh_ref, a_ref, Adjust = pvlib.ivtools.sdm.fit_cec_sam(celltype=i, 
                                                                                                    v_mp=_module['V_mp_ref'], 
