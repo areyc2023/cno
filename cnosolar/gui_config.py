@@ -284,8 +284,8 @@ def execute():
                                     <li> <b>$V_{OC}$ en STC:</b> Voltaje de circuito abierto en condiciones STC en V. </li>
                                     <li> <b>$I_{MP}$ en STC:</b> Corriente en el punto de máxima potencia en condiciones STC en A. </li>
                                     <li> <b>$V_{MP}$ en STC:</b> Voltaje en el punto de máxima potencia en condiciones STC en V.</b> </li>
-                                    <li> <b>Coef. Temp. $I_{SC}$:</b> Coeficiente de temperatura de la corriente de cortocircuito en A/ºC. </li>
-                                    <li> <b>Coef. Temp. $V_{OC}$:</b> Coeficiente de temperatura de voltaje de circuito abierto en V/ºC. </li>
+                                    <li> <b>Coef. Temp. $I_{SC}$:</b> Coeficiente de temperatura de la corriente de cortocircuito en %/ºC. </li>
+                                    <li> <b>Coef. Temp. $V_{OC}$:</b> Coeficiente de temperatura de voltaje de circuito abierto en %/ºC. </li>
                                     <li> <b>Coef. Temp. $P_{MP}$:</b> Coeficiente de temperatura de la potencia en el punto máximo en %/ºC. </li>
                                     <li> <b>$P_{Nominal}$ en STC:</b> Potencia nominal del módulo fotovoltaico en condiciones STC en W.</li>
                                   </ul>
@@ -388,13 +388,13 @@ def execute():
                                 justify_content='space-between')
 
     w_latitude = widgets.FloatText(value=0,
-                                   step=0.001,
+                                   step=0.00001,
                                    description='',
                                    disabled=False,
                                    style={'description_width': 'initial'})
 
     w_longitude = widgets.FloatText(value=0,
-                                    step=0.01,
+                                    step=0.00001,
                                     description='',
                                     disabled=False,
                                     style={'description_width': 'initial'})
@@ -447,9 +447,7 @@ def execute():
     #        INVERTER TAB         #
     ###############################
     inv_repo = {'': None,
-                'CEC': 'CECInverter',
-                'Sandia': 'SandiaInverter',
-                'Anton Driesse': 'ADRInverter'}
+                'CEC': 'CECInverter'}
 
     gui_layout = widgets.Layout(display='flex',
                                 flex_flow='row',
@@ -772,7 +770,7 @@ def execute():
 
         elif change['new'] == 'Manual':  
             w_T_NOCT = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_Type = widgets.Dropdown(options=[('Mono-Si', 'monoSi'), ('Multi-Si', 'multiSi'), ('Poli-Si', 'polySi'), ('CIS', 'cis'), ('CIGS', 'cigs'), ('CdTe', 'cdte'), ('Amorfo', 'amorphous')], value=None, description='', style={'description_width': 'initial'})
+            w_Type = widgets.Dropdown(options=[('Mono-Si', 'monosi'), ('Multi-Si', 'multisi'), ('Poli-Si', 'polysi'), ('CIS', 'cis'), ('CIGS', 'cigs'), ('CdTe', 'cdte'), ('Amorfo', 'amorphous')], value=None, description='', style={'description_width': 'initial'})
             w_N_s = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_I_sc_ref = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_V_oc_ref = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
@@ -800,7 +798,7 @@ def execute():
 
     def handle_dropdown_modmanuf(change):
         if change['new'] == 'PVFree':
-            dropdown_pvfree = widgets.Dropdown(options=['', 'pvmodule', 'cecmodule'],
+            dropdown_pvfree = widgets.Dropdown(options=['', 'cecmodule', 'pvmodule'],
                                            value=None,
                                            description='',
                                            style={'description_width': 'initial'})
@@ -1097,18 +1095,34 @@ def execute():
             inverters_database = dropdown_invrepo.value
             inverter_name = inverter_vbox.children[3].children[0].children[1].value
             inverter = dict(pvlib.pvsystem.retrieve_sam(inverters_database)[inverter_name])
-            inverter['Vac'] = float(inverter['Vac'])
+            
             ac_model = 'sandia'
+                 
+            inverter = {'Paco': inverter['Paco'],
+                        'Pdco': inverter['Pdco'],
+                        'Vdco': inverter['Vdco'],
+                        'Pso': inverter['Pso'],
+                        'C0': inverter['C0'],
+                        'C1': inverter['C1'],
+                        'C2': inverter['C2'],
+                        'C3': inverter['C3'],
+                        'Pnt': inverter['Pnt']}
 
         if inverter_btn.value == 'PVsyst':
             inverter = btn.files['inv']
 
-            ac_model = 'pvwatts'
             inverters_database = None
             inverter_name = None
+            
+            ac_model = 'pvwatts'
+
+            inverter = {'Pdco': inverter['Pdco'],
+                        'eta_inv_nom': inverter['eta_inv_nom']}
 
         if inverter_btn.value == 'Manual':
             if dropdown_manual.value == 'SNL PVlib':
+                ac_model = 'sandia'
+                    
                 inverter = {'Paco': inverter_vbox.children[2].children[1].children[1].value,
                             'Pdco': inverter_vbox.children[2].children[2].children[1].value,
                             'Vdco': inverter_vbox.children[2].children[3].children[1].value,
@@ -1119,14 +1133,12 @@ def execute():
                             'C3': inverter_vbox.children[2].children[8].children[1].value,
                             'Pnt': inverter_vbox.children[2].children[9].children[1].value}
 
-                ac_model = 'sandia'
-
             elif dropdown_manual.value == 'NREL PVWatts':
-                inverter = {'pdc0': inverter_vbox.children[2].children[1].children[1].value,
-                            'eta_inv_nom': inverter_vbox.children[2].children[2].children[1].value,
-                            'eta_inv_ref': 0.9637}
-
                 ac_model = 'pvwatts'
+                
+                inverter = {'Pdco': inverter_vbox.children[2].children[1].children[1].value,
+                            'eta_inv_nom': inverter_vbox.children[2].children[2].children[1].value}
+                            #'eta_inv_ref': 0.9637}
 
             inverters_database = None
             inverter_name = None
@@ -1141,17 +1153,83 @@ def execute():
                 modules_name = module_vbox.children[3].children[0].children[1].value
                 module = dict(pvlib.pvsystem.retrieve_sam(modules_database)[modules_name])
 
+                if modules_database == 'CECMod':
+                    module = {'T_NOCT': module['T_NOCT'],
+                              'Technology': module['Technology'],
+                              'N_s': module['N_s'],
+                              'I_sc_ref': module['I_sc_ref'],
+                              'V_oc_ref': module['V_oc_ref'],
+                              'I_mp_ref': module['I_mp_ref'],
+                              'V_mp_ref': module['V_mp_ref'],
+                              'alpha_sc': np.round(module['alpha_sc']*100/module['I_sc_ref'], 6), # %/ºC (÷ 100 * Isc -> A/ºC)
+                              'beta_oc': np.round(module['beta_oc']*100/module['V_oc_ref'], 6), # %/ºC (÷ 100 * Voc -> V/ºC)
+                              'gamma_r': module['gamma_r'], # %/ºC
+                              'STC': module['STC']}
+                
+                # https://www.osti.gov/servlets/purl/919131 (pp.16-17)
+                elif modules_database == 'SandiaMod': 
+                    module = {'T_NOCT': 45,
+                              'Technology': module['Material'],
+                              'N_s': module['Cells_in_Series'],
+                              'I_sc_ref': module['Isco'],
+                              'V_oc_ref': module['Voco'],
+                              'I_mp_ref': module['Impo'],
+                              'V_mp_ref': module['Vmpo'],
+                              'alpha_sc': np.round(module['Aisc']*100, 6), # %/ºC (÷ 100 * Isc -> A/ºC)
+                              'beta_oc': np.round(module['Bvoco']*100/module['Voco'], 6), # %/ºC (÷ 100 * Voc -> V/ºC)
+                              'gamma_r': 0,
+                              'STC': np.round(module['Impo']*module['Vmpo'], 2)}
+                
             else:
                 modules_database = dropdown_modrepo.value
                 module = dict(requests.get(f'https://pvfree.herokuapp.com/api/v1/{module_vbox.children[2].children[0].children[1].value}/{module_vbox.children[3].children[0].children[1].children[0].value}/').json())
                 modules_name = module['Name']        
-
+            
+                if module_vbox.children[2].children[0].children[1].value == 'cecmodule':
+                    module = {'T_NOCT': module['T_NOCT'],
+                              'Technology': module['Technology'],
+                              'N_s': module['N_s'],
+                              'I_sc_ref': module['I_sc_ref'],
+                              'V_oc_ref': module['V_oc_ref'],
+                              'I_mp_ref': module['I_mp_ref'],
+                              'V_mp_ref': module['V_mp_ref'],
+                              'alpha_sc': module['alpha_sc'],
+                              'beta_oc': module['beta_oc'],
+                              'gamma_r': module['gamma_r'],
+                              'STC': module['STC']}
+                
+                # https://www.osti.gov/servlets/purl/919131 (pp.16-17)
+                elif module_vbox.children[2].children[0].children[1].value == 'pvmodule':
+                    module = {'T_NOCT': 45,
+                              'Technology': module['Material'],
+                              'N_s': module['Cells_in_Series'],
+                              'I_sc_ref': module['Isco'],
+                              'V_oc_ref': module['Voco'],
+                              'I_mp_ref': module['Impo'],
+                              'V_mp_ref': module['Vmpo'],
+                              'alpha_sc': np.round(module['Aisc']*100, 6), # %/ºC (÷ 100 * Isc -> A/ºC)
+                              'beta_oc': np.round(module['Bvoco']*100/module['Voco'], 6), # %/ºC (÷ 100 * Voc -> V/ºC)
+                              'gamma_r': 0,
+                              'STC': np.round(module['Impo']*module['Vmpo'], 2)}
+                
         if module_btn.value == 'PVsyst':
             module = modbtn.files['mod']
             module['a_ref'] = module['Gamma'] * module['NCelS'] * (1.38e-23 * (273.15 + 25) / 1.6e-19)
 
             modules_database = None
-            modules_name = None           
+            modules_name = None   
+            
+            module = {'T_NOCT': module['TRef'],
+                      'Technology': module['Technol'],
+                      'N_s': module['NCelS'],
+                      'I_sc_ref': module['Isc'],
+                      'V_oc_ref': module['Voc'],
+                      'I_mp_ref': module['Imp'],
+                      'V_mp_ref': module['Vmp'],
+                      'alpha_sc': np.round(module['mIsc_percent'], 2), # %/ºC (÷ 100 * Isc -> A/ºC)
+                      'beta_oc': np.round(module['mVoc_percent'], 2), # %/ºC (÷ 100 * Voc -> V/ºC)
+                      'gamma_r': module['mPmpp'], # %/ºC
+                      'STC': module['Pmpp']}
 
         if module_btn.value == 'Manual':
             module = {'T_NOCT': module_vbox.children[1].children[1].children[1].value,
@@ -1168,7 +1246,27 @@ def execute():
 
             modules_database = None
             modules_name = None
+        
+        t = module['Technology']
+        if t in ['Mono-c-Si', 'monoSi', 'monosi', 'c-Si', 'xsi', 'mtSiMono']:
+            module_tec = 'monosi'
+        elif t in ['Multi-c-Si', 'multiSi',  'multisi', 'mc-Si', 'EFG mc-Si']:
+            module_tec = 'multisi'
+        elif t in ['polySi',  'polysi', 'mtSiPoly']:
+            module_tec = 'polisi'
+        elif t in ['CIS',  'cis']:
+            module_tec = 'cis'
+        elif t in ['CIGS', 'cigs']:
+            module_tec = 'cigs'
+        elif t in ['CdTe', 'cdte', 'Thin Film',  'GaAs']:
+            module_tec = 'cdte'
+        elif t in ['amorphous', 'asi', 'a-Si / mono-Si', '2-a-Si',  '3-a-Si',  'Si-Film', 'HIT-Si']:
+            module_tec = 'asi'
+        else:
+            module_tec = None
             
+        module['Technology'] = module_tec
+        
         if bifacial_vbox.children[0].children[0].children[1].value == False:
             bifacial = False
             bifaciality = 0
@@ -1200,13 +1298,13 @@ def execute():
                 surface_azimuth = str_to_list(sysconfig_vbox.children[2].children[1].children[1].value)
                 
             if racking_model == 'open_rack':
-                module_type = 'open_rack_glass_glass'
+                module_type = 'glass_glass'
 
             elif racking_model == 'close_mount':
-                module_type = 'close_mount_glass_glass'
+                module_type = 'glass_glass'
 
             elif racking_model == 'insulated_back':
-                module_type = 'insulated_back_glass_polymer'
+                module_type = 'glass_polymer'
 
         elif tracker_btn.value == 'Seguidor 1-Eje':
             with_tracker = True
@@ -1225,13 +1323,13 @@ def execute():
                 max_angle = str_to_list(sysconfig_vbox.children[2].children[2].children[1].value)           
 
             if racking_model == 'open_rack':
-                module_type = 'open_rack_glass_glass'
+                module_type = 'glass_glass'
 
             elif racking_model == 'close_mount':
-                module_type = 'close_mount_glass_glass'
+                module_type = 'glass_glass'
 
             elif racking_model == 'insulated_back':
-                module_type = 'insulated_back_glass_polymer'
+                module_type = 'glass_polymer'
 
         return [with_tracker, surface_azimuth, surface_tilt, axis_tilt, axis_azimuth, max_angle, module_type, racking_model]
 
@@ -1255,18 +1353,18 @@ def execute():
                                 'longitude': w_longitude.value,
                                 'tz': w_timezone.value,
                                 'altitude': w_altitude.value,
-                                'surface_type': w_surface.value,
+                                #'surface_type': w_surface.value,
                                 'surface_albedo': w_albedo.value,
 
                                 # Inverter
-                                'inverters_database': inverter_status[0],
-                                'inverter_name': inverter_status[1],
+                                #'inverters_database': inverter_status[0],
+                                #'inverter_name': inverter_status[1],
                                 'inverter': dict(inverter_status[2]),
                                 'ac_model': inverter_status[3],
 
                                 # PV Module
-                                'modules_database': module_status[0],
-                                'module_name': module_status[1],
+                                #'modules_database': module_status[0],
+                                #'module_name': module_status[1],
                                 'module': dict(module_status[2]),
                                 'bifacial': module_status[3],
                                 'bifaciality': module_status[4],
@@ -1280,8 +1378,8 @@ def execute():
                                 'axis_tilt': mount_status[3],
                                 'axis_azimuth': mount_status[4],
                                 'max_angle': mount_status[5],
-                                'module_type': mount_status[6],
-                                'racking_model': mount_status[7],
+                                #'module_type': mount_status[6],
+                                #'racking_model': mount_status[7],
 
                                 # Electric Configuration
                                 'num_arrays': w_subarrays.value,

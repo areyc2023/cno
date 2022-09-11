@@ -293,7 +293,7 @@ def ac_production_pvwatts(p_dc, inverter, kpc=0, kt=0, kin=0, num_inverter=1, av
         p_dc.append(list(np.repeat(a=0, repeats=len(p_dc[0]))))
 
     ac = pvlib.inverter.pvwatts_multi(pdc=p_dc, 
-                                      pdc0=inverter['pdc0'],
+                                      pdc0=inverter['Pdco'],
                                       eta_inv_nom=inverter['eta_inv_nom'],
                                       eta_inv_ref=0.9637).fillna(0)
     
