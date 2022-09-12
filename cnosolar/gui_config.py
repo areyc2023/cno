@@ -897,7 +897,7 @@ def execute():
     ###############################
 
     # SUBARRAYS
-    w_subarrays = widgets.IntText(value=0, description='', style={'description_width': 'initial'})
+    w_subarrays = widgets.BoundedIntText(value=0, min=0, max=1000, description='', style={'description_width': 'initial'})
 
     conf_subarrays = widgets.VBox([widgets.Box([widgets.HTML('<h4>Subarrays</h4>', layout=widgets.Layout(height='auto'))]),
                                    widgets.Box([widgets.Label('Cantidad Subarrays'), w_subarrays], layout=gui_layout)])

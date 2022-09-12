@@ -3,44 +3,40 @@
   "longitude": -74.066038,
   "tz": "America/Bogota",
   "altitude": 2632.0,
-  "surface_type": "urban",
   "surface_albedo": 0.18,
-  "inverters_database": null,
-  "inverter_name": null,
   "inverter": {
-    "pdc0": 28199.2,
-    "eta_inv_nom": 0.98,
-    "eta_inv_ref": 0.9637
+    "Pdco": 28199.2,
+    "eta_inv_nom": 0.98
   },
   "ac_model": "pvwatts",
-  "modules_database": null,
-  "module_name": null,
   "module": {
     "T_NOCT": 44.0,
-    "Technology": "multiSi",
+    "Technology": "multisi",
     "N_s": 72.0,
     "I_sc_ref": 11.35,
     "V_oc_ref": 48.6,
     "I_mp_ref": 10.85,
     "V_mp_ref": 40.1,
-    "alpha_sc": 0.004426,
-    "beta_oc": -0.13122,
+    "alpha_sc": 0.038996,
+    "beta_oc": -0.27,
     "gamma_r": -0.361,
-    "STC": 406.3,
-    "I_L_ref": 11.470310652898478,
-    "I_o_ref": 2.6346496216404014e-11,
-    "R_s": 0.2694624688734862,
-    "R_sh_ref": 453.5516802653593,
-    "a_ref": 1.8141055409583882,
-    "Adjust": 7.636584224489093
+    "STC": 406.3
   },
   "bifacial": true,
   "bifaciality": 0.7,
   "row_height": 1.0,
   "row_width": 2.132,
+  "num_arrays": 1,
+  "modules_per_string": [
+    10
+  ],
+  "strings_per_inverter": [
+    7
+  ],
+  "num_inverter": 4,
   "with_tracker": true,
-  "surface_azimuth": null,
   "surface_tilt": null,
+  "surface_azimuth": null,
   "axis_tilt": [
     0.0
   ],
@@ -50,16 +46,6 @@
   "max_angle": [
     45.0
   ],
-  "module_type": "open_rack_glass_glass",
-  "racking_model": "open_rack",
-  "num_arrays": 1,
-  "modules_per_string": [
-    10
-  ],
-  "strings_per_inverter": [
-    7
-  ],
-  "num_inverter": 4,
   "loss": 14.6,
   "kpc": 0.0,
   "kt": 0.0,
