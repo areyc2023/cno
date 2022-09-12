@@ -226,11 +226,17 @@ El factor de pérdidas globales DC del sistema, se define como el porcentaje de 
 
 Por el lado AC, el modelo estima la producción a la salida de los inversores. Es necesario incluir factores que incorporen las pérdidas de transformación y transmisión hasta el punto de conexión. En este sentido se requieren tres factores asociados a estos procesos así:
 
-* $k_{pc}$: pérdidas de transmisión hasta el punto común de acople de los inversores.
-* $k_{t}$: pérdidas asociadas a la transformación (elevación de tensión).
-* $k_{in}$: pérdidas de interconexión, transmisión hasta el punto de conexión.
+* $k_{pc}$: pérdidas de transmisión hasta el punto común de acople de los inversores. En porcentaje.
+* $k_{t}$: pérdidas asociadas a la transformación (elevación de tensión). En porcentaje.
+* $k_{in}$: pérdidas de interconexión, transmisión hasta el punto de conexión. En porcentaje.
 
 Estos factores deben ser estimados mediante un modelo eléctrico específico a la planta. 
+
+La potencia AC en el punto de conexión se calcula de la siguiente manera:
+
+$Pot_{ac,conexión} = Pot_{ac} * (1-k_{pc}/100) * (1-k_{t}/100) * (1-k_{in}/100)$
+
+Donde $Pot_{ac,conexión}$ es la potencia final en el punto de conexión y $Pot_{ac}$ es la pontencia en los inversores.
 
 # Especificación archivo de configuración de una planta solar fotovoltaica
 
@@ -303,7 +309,7 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
     **Parámetros técnicos del módulo solar fotovoltaico.**
 
     1. T_NOCT: Temperatura de celda de operación nominal en ºC.
-    2. Technology: Tecnología de la celda solar fotovoltaica. Opciones válidas: monosi, multisi, cigs, cdte, amorphous o None.
+    2. Technology: Tecnología de la celda solar fotovoltaica. Opciones válidas: monosi, multisi, cigs, cdte o amorphous.
     3. N_s: Número de celdas solares en serie.
     4. I_sc_ref: Corriente de circuito cerrado en condiciones STC en A.
     5. V_oc_ref: Voltaje de circuito abierto en condiciones STC en V.
@@ -371,24 +377,28 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
 
         Máximo angulo de rotación del seguidor desde su posición horizontal (por ejemplo, un valor de 90º permite al seguidor girar desde y hasta la posición vertical donde las caras del módulo miran al horizonte) en [grados]. Si `with_tracker = false`, el valor se asigna a `null`.
 
-30. loss : float
+23. module_type : string
+
+    Método de montaje de los módulos solares y materiales del frente y parte trasera de los mismos. Las opciones válidas son: `open_rack_glass_glass`, `close_mount_glass_glass` o `insulated_back_glass_polymer`.
+
+24. loss : float
 
     Pérdidas globales del sistema del lado DC en porcentaje.
     Valor por defecto = 14.6
     
-31. kpc : float
+25. kpc : float
 
     Pérdidas de transmisión hasta el punto común de acople de los inversores en porcentaje.
 
-32. kt : float
+26. kt : float
 
     Pérdidas asociadas a la transformación (elevación de tensión) en porcentaje.
 
-33. kin: float
+27. kin: float
 
     Pérdidas de interconexión, transmisión hasta el punto de conexión en porcentaje.
 
-34. name : string
+28. name : string
 
     Nombre de la configuración de planta.
     
