@@ -769,17 +769,17 @@ def execute():
             module_vbox.children = [module_btn, w_modupload]
 
         elif change['new'] == 'Manual':  
-            w_T_NOCT = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
+            w_T_NOCT = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_Type = widgets.Dropdown(options=[('Mono-Si', 'monosi'), ('Multi-Si', 'multisi'), ('Poli-Si', 'polysi'), ('CIS', 'cis'), ('CIGS', 'cigs'), ('CdTe', 'cdte'), ('Amorfo', 'amorphous')], value=None, description='', style={'description_width': 'initial'})
             w_N_s = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_I_sc_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_V_oc_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_I_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_V_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_alpha_sc = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_beta_oc = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_gamma_r = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_STC = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
+            w_I_sc_ref = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_V_oc_ref = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_I_mp_ref = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_V_mp_ref = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_alpha_sc = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_beta_oc = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_gamma_r = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_STC = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
 
             mod_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Módulo</h5>', layout=widgets.Layout(height='auto'))]),
                                      widgets.Box([widgets.Label('$T_{NOCT}$  [ºC]'), w_T_NOCT], layout=gui_layout),
@@ -789,8 +789,8 @@ def execute():
                                      widgets.Box([widgets.Label('$V_{OC}$ en STC [V]'), w_V_oc_ref], layout=gui_layout),
                                      widgets.Box([widgets.Label('$I_{MP}$ en STC [A]'), w_I_mp_ref], layout=gui_layout),
                                      widgets.Box([widgets.Label('$V_{MP}$ en STC [A]'), w_V_mp_ref], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Coef. Temp. $I_{SC}$ [%/ºC]'), w_alpha_sc], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Coef. Temp. $V_{OC}$ [%/ºC]'), w_beta_oc], layout=gui_layout),
+                                     widgets.Box([widgets.Label('Coef. Temp. $I_{SC}$ [A/ºC]'), w_alpha_sc], layout=gui_layout),
+                                     widgets.Box([widgets.Label('Coef. Temp. $V_{OC}$ [V/ºC]'), w_beta_oc], layout=gui_layout),
                                      widgets.Box([widgets.Label('Coef. Temp. $P_{MP}$ [%/ºC]'), w_gamma_r], layout=gui_layout),
                                      widgets.Box([widgets.Label('$P_{Nominal}$ en STC [W]'), w_STC], layout=gui_layout)])
 
@@ -854,9 +854,6 @@ def execute():
             module['T_NOCT'] = module['TRef'] + 20
             module['IAM'] = module['IAM'].tolist()
             modbtn.files = {'mod': module}
-            
-            if module['T_NOCT'] >= 50:
-                module['T_NOCT'] = module['TRef']
     
     # BIFACIAL 
     def handle_dropdown_bifacial(change):
@@ -947,9 +944,9 @@ def execute():
             w_Racking = widgets.Dropdown(options=['', 'open_rack', 'close_mount', 'insulated_back'], value=None, description='', style={'description_width': 'initial'})
 
             if w_subarrays.value == 1:
-                v_angles = '0.0'
+                v_angles = '0'
             else:
-                v_angles = '0.0, ' * w_subarrays.value
+                v_angles = '0, ' * w_subarrays.value
                 v_angles = v_angles[:-2]
 
             w_Azimuth.value = v_angles
@@ -968,9 +965,9 @@ def execute():
             w_Racking = widgets.Dropdown(options=['', 'open_rack', 'close_mount', 'insulated_back'], value=None, description='', style={'description_width': 'initial'})
 
             if w_subarrays.value == 1:
-                v_angles = '0.0'
+                v_angles = '0'
             else:
-                v_angles = '0.0, ' * w_subarrays.value
+                v_angles = '0, ' * w_subarrays.value
                 v_angles = v_angles[:-2]
 
             w_AxisTilt.value = v_angles
@@ -1141,6 +1138,7 @@ def execute():
                 
                 inverter = {'Pdco': inverter_vbox.children[2].children[1].children[1].value,
                             'eta_inv_nom': inverter_vbox.children[2].children[2].children[1].value}
+                            #'eta_inv_ref': 0.9637}
 
             inverters_database = None
             inverter_name = None
@@ -1221,20 +1219,17 @@ def execute():
             modules_database = None
             modules_name = None   
             
-            module = {'T_NOCT': module['TRef']+20,
+            module = {'T_NOCT': module['TRef'],
                       'Technology': module['Technol'],
                       'N_s': module['NCelS'],
                       'I_sc_ref': module['Isc'],
                       'V_oc_ref': module['Voc'],
                       'I_mp_ref': module['Imp'],
                       'V_mp_ref': module['Vmp'],
-                      'alpha_sc': np.round(module['mIsc_percent'], 6), # %/ºC (÷ 100 * Isc -> A/ºC)
-                      'beta_oc': np.round(module['mVoc_percent'], 6), # %/ºC (÷ 100 * Voc -> V/ºC)
+                      'alpha_sc': np.round(module['mIsc_percent'], 2), # %/ºC (÷ 100 * Isc -> A/ºC)
+                      'beta_oc': np.round(module['mVoc_percent'], 2), # %/ºC (÷ 100 * Voc -> V/ºC)
                       'gamma_r': module['mPmpp'], # %/ºC
                       'STC': module['Pmpp']}
-                      
-            if module['T_NOCT'] >= 50:
-                module['T_NOCT'] = module['TRef']
 
         if module_btn.value == 'Manual':
             module = {'T_NOCT': module_vbox.children[1].children[1].children[1].value,
@@ -1274,9 +1269,9 @@ def execute():
         
         if bifacial_vbox.children[0].children[0].children[1].value == False:
             bifacial = False
-            bifaciality = 0.0
-            row_height = 0.0
-            row_width = 0.0
+            bifaciality = 0
+            row_height = 0
+            row_width = 0
         else:
             bifacial = True
             bifaciality = bifacial_vbox.children[1].children[0].children[1].value
@@ -1299,8 +1294,8 @@ def execute():
                 surface_azimuth = [float(sysconfig_vbox.children[2].children[1].children[1].value)]
 
             elif num_arrays > 1:
-                surface_tilt = list(map(float, str_to_list(sysconfig_vbox.children[2].children[0].children[1].value)))
-                surface_azimuth = list(map(float, str_to_list(sysconfig_vbox.children[2].children[1].children[1].value)))
+                surface_tilt = str_to_list(sysconfig_vbox.children[2].children[0].children[1].value)
+                surface_azimuth = str_to_list(sysconfig_vbox.children[2].children[1].children[1].value)
                 
             if racking_model == 'open_rack':
                 module_type = 'glass_glass'
@@ -1323,9 +1318,9 @@ def execute():
                 max_angle = [float(sysconfig_vbox.children[2].children[2].children[1].value)]
 
             elif num_arrays > 1:
-                axis_tilt = list(map(float, str_to_list(sysconfig_vbox.children[2].children[0].children[1].value)))
-                axis_azimuth = list(map(float, str_to_list(sysconfig_vbox.children[2].children[1].children[1].value)))
-                max_angle = list(map(float, str_to_list(sysconfig_vbox.children[2].children[2].children[1].value)))  
+                axis_tilt = str_to_list(sysconfig_vbox.children[2].children[0].children[1].value)
+                axis_azimuth = str_to_list(sysconfig_vbox.children[2].children[1].children[1].value)
+                max_angle = str_to_list(sysconfig_vbox.children[2].children[2].children[1].value)           
 
             if racking_model == 'open_rack':
                 module_type = 'glass_glass'
@@ -1346,8 +1341,8 @@ def execute():
             strings_per_inverter = [int(w_spi.value)] #Strings Per Inverter
 
         elif num_arrays > 1:
-            modules_per_string = list(map(int, str_to_list(w_mps.value))) #Modules Per String
-            strings_per_inverter = list(map(int, str_to_list(w_spi.value))) #Strings Per Inverter
+            modules_per_string = str_to_list(w_mps.value) #Modules Per String
+            strings_per_inverter = str_to_list(w_spi.value) #Strings Per Inverter
 
         return [modules_per_string, strings_per_inverter, num_inverters]
 
@@ -1376,23 +1371,21 @@ def execute():
                                 'row_height': module_status[5],
                                 'row_width': module_status[6],
             
-                                # Subarrays
-                                'num_arrays': w_subarrays.value,
-            
-                                # Electric Configuration
-                                'modules_per_string': econfig_status[0],
-                                'strings_per_inverter': econfig_status[1],
-                                'num_inverter': econfig_status[2],
-            
                                 # Mount
                                 'with_tracker': mount_status[0],
-                                'surface_tilt': mount_status[2],
                                 'surface_azimuth': mount_status[1],
+                                'surface_tilt': mount_status[2],
                                 'axis_tilt': mount_status[3],
                                 'axis_azimuth': mount_status[4],
                                 'max_angle': mount_status[5],
                                 #'module_type': mount_status[6],
                                 #'racking_model': mount_status[7],
+
+                                # Electric Configuration
+                                'num_arrays': w_subarrays.value,
+                                'modules_per_string': econfig_status[0],
+                                'strings_per_inverter': econfig_status[1],
+                                'num_inverter': econfig_status[2],
 
                                 # Global Parameters
                                 'loss': w_loss.value,
