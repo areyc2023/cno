@@ -146,49 +146,42 @@ def run(system_configuration, data, availability, energy_units):
         check = [item for item in _tocheck if item not in _module.keys()]
 
         ## Module Technology
-        t = sc['module']['Technology']            
-        if t in ['Mono-c-Si', 'monoSi', 'monosi', 'c-Si', 'xsi', 'mtSiMono']:
+        t = sc['module']['Technology']
+        if t in ['Mono-c-Si', 'mc-Si', 'c-Si', 'monoSi', 'monosi', 'xsi', 'Thin Film', 'Si-Film', 'HIT-Si', 'EFG mc-Si']:
             module_tec = 'monoSi'
-        elif t in ['Multi-c-Si', 'multiSi',  'multisi', 'mc-Si', 'EFG mc-Si']:
+        elif t in ['Multi-c-Si', 'multiSi', 'multisi']:
             module_tec = 'multiSi'
-        elif t in ['polySi',  'polysi', 'mtSiPoly']:
-            module_tec = 'poliSi'
-        elif t in ['CIS',  'cis']:
+        elif t in ['polySi', 'polysi', 'mtSiPoly']:
+            module_tec = 'polySi'
+        elif t in ['CIS', 'cis']:
             module_tec = 'cis'
         elif t in ['CIGS', 'cigs']:
             module_tec = 'cigs'
-        elif t in ['CdTe', 'cdte', 'Thin Film',  'GaAs']:
+        elif t in ['CdTe', 'CdTe', 'cdte', 'GaAs']:
             module_tec = 'cdte'
-        elif t in ['amorphous', 'asi', 'a-Si / mono-Si', '2-a-Si',  '3-a-Si',  'Si-Film', 'HIT-Si']:
+        elif t in ['asi', 'amorphous', 'a-Si / mono-Si', '2-a-Si', '3-a-Si']:
             module_tec = 'amorphous'
         else:
             module_tec = None
 
-        if len(check) > 0:            
-            for i in [module_tec, 'mono','multi','cis','cigs','cdte','amorphous']:
-                try:
-                    I_L_ref, I_o_ref, R_s, R_sh_ref, a_ref, Adjust = pvlib.ivtools.sdm.fit_cec_sam(celltype=i, 
-                                                                                                   v_mp=_module['V_mp_ref'], 
-                                                                                                   i_mp=_module['I_mp_ref'], 
-                                                                                                   v_oc=_module['V_oc_ref'], 
-                                                                                                   i_sc=_module['I_sc_ref'], 
-                                                                                                   alpha_sc=_module['alpha_sc'], 
-                                                                                                   beta_voc=_module['beta_oc'], 
-                                                                                                   gamma_pmp=_module['gamma_r'], 
-                                                                                                   cells_in_series=_module['N_s'], 
-                                                                                                   temp_ref=25)
-                except:
-                    I_L_ref, I_o_ref, R_s, R_sh_ref, a_ref, Adjust = None, None, None, None, None, None
+        if len(check) > 0:
+            I_L_ref, I_o_ref, R_s, R_sh_ref, a_ref, Adjust = pvlib.ivtools.sdm.fit_cec_sam(celltype=module_tec, 
+                                                                                           v_mp=_module['V_mp_ref'], 
+                                                                                           i_mp=_module['I_mp_ref'], 
+                                                                                           v_oc=_module['V_oc_ref'], 
+                                                                                           i_sc=_module['I_sc_ref'], 
+                                                                                           alpha_sc=_module['alpha_sc'], 
+                                                                                           beta_voc=_module['beta_oc'], 
+                                                                                           gamma_pmp=_module['gamma_r'], 
+                                                                                           cells_in_series=_module['N_s'], 
+                                                                                           temp_ref=25)
 
-                if I_L_ref != None:
-                    break
-
-            sc['module'].update({'I_L_ref': I_L_ref, 
-                                 'I_o_ref': I_o_ref,
-                                 'R_s': R_s, 
-                                 'R_sh_ref': R_sh_ref, 
-                                 'a_ref': a_ref,
-                                 'Adjust': Adjust})
+            sc['module'].update({'I_L_ref':I_L_ref, 
+                                 'I_o_ref':I_o_ref,
+                                 'R_s':R_s, 
+                                 'R_sh_ref':R_sh_ref, 
+                                 'a_ref':a_ref,
+                                 'Adjust':Adjust})
         
         # Temporal Parameters List
         if num_systems > 1:
@@ -230,16 +223,16 @@ def run(system_configuration, data, availability, energy_units):
                                                                axis_tilt=ax_tilt, 
                                                                axis_azimuth=ax_azimuth, 
                                                                max_angle=m_angle,
-                                                               racking_model=None) #sc['racking_model'])
+                                                               racking_model=sc['racking_model'])
             
             # Bifacial Spectral Mismatch
             if sc['with_tracker'] == False:
                 st = list(np.repeat(sur_tilt, len(data)))
                 sa = list(np.repeat(sur_azimuth, len(data)))
                 aoi = pvlib.irradiance.aoi(surface_tilt=st,
-                                           surface_azimuth=sa, 
-                                           solar_zenith=solpos.apparent_zenith, 
-                                           solar_azimuth=solpos.azimuth)
+                                               surface_azimuth=sa, 
+                                               solar_zenith=solpos.apparent_zenith, 
+                                               solar_azimuth=solpos.azimuth)
             else:
                 st = tracker.surface_tilt
                 sa = tracker.surface_azimuth
@@ -316,7 +309,7 @@ def run(system_configuration, data, availability, energy_units):
                                                           etr_nrel=etr_nrel, 
                                                           airmass=airmass,
                                                           surface_albedo=sc['surface_albedo'],
-                                                          surface_type=None) #sc['surface_type'])
+                                                          surface_type=sc['surface_type'])
                 
                 # Effective Irradiance
                 poa = spectral_mismatch * (abs(poa['poa_direct'] * iam + poa['poa_diffuse']))
@@ -379,8 +372,8 @@ def run(system_configuration, data, availability, energy_units):
             # Arrays
             string_array = cno.def_pvsystem.get_arrays(mount=mount,
                                                        surface_albedo=sc['surface_albedo'],
-                                                       surface_type=None, #sc['surface_type'], 
-                                                       module_type=None, #sc['module_type'], 
+                                                       surface_type=sc['surface_type'], 
+                                                       module_type=sc['module_type'], 
                                                        module=sc['module'], 
                                                        mps=sc['modules_per_string'][i], 
                                                        spi=sc['strings_per_inverter'][i])
@@ -392,11 +385,11 @@ def run(system_configuration, data, availability, energy_units):
                                                    surface_tilt=sur_tilt, 
                                                    surface_azimuth=sur_azimuth,
                                                    surface_albedo=sc['surface_albedo'],
-                                                   surface_type=None, #sc['surface_type'], 
-                                                   module_type=None, #sc['module_type'], 
+                                                   surface_type=sc['surface_type'], 
+                                                   module_type=sc['module_type'], 
                                                    module=sc['module'], 
                                                    inverter=sc['inverter'], 
-                                                   racking_model=None) #sc['racking_model'])
+                                                   racking_model=sc['racking_model'])
             
             # Cell Temperature
             if 'Tmod' in list(data.columns):
