@@ -172,8 +172,8 @@ def run(system_configuration, data, availability, energy_units):
                                                                                                    i_mp=_module['I_mp_ref'], 
                                                                                                    v_oc=_module['V_oc_ref'], 
                                                                                                    i_sc=_module['I_sc_ref'], 
-                                                                                                   alpha_sc=(_module['alpha_sc']/100)*_module['I_sc_ref'], 
-                                                                                                   beta_voc=(_module['beta_oc']/100)*_module['V_oc_ref'], 
+                                                                                                   alpha_sc=_module['alpha_sc'], 
+                                                                                                   beta_voc=_module['beta_oc'], 
                                                                                                    gamma_pmp=_module['gamma_r'], 
                                                                                                    cells_in_series=_module['N_s'], 
                                                                                                    temp_ref=25)

@@ -168,10 +168,10 @@ def execute():
     output = widgets.Output()
 
     def on_button_clicked(obj):
+        btn.description = 'Archivos Cargados'
+        btn.icon = 'check'
+
         with output:
-            btn.description = 'Cargando Archivos'
-            btn.icon = 'hourglass-2'
-            
             output.clear_output()
 
             system_config = []
@@ -182,9 +182,6 @@ def execute():
             df = cno.data.load_csv(file_name=upload_data.files, tz=system_config[0]['tz'])
 
             btn.files = {'system_configuration': system_config, 'df': df}
-            
-            btn.description = 'Archivos Cargados'
-            btn.icon = 'check'
             
     btn.on_click(on_button_clicked)
     
@@ -236,10 +233,7 @@ def execute():
 
     # Functions
     def on_button_clicked_cen(obj):
-        with cen_output:      
-            w_cen.description = 'Calculando CEN'
-            w_cen.icon = 'hourglass-2'
-            
+        with cen_output:
             cen_output.clear_output()
 
             bus_pipeline = cno.pipeline.run(system_configuration=btn.files['system_configuration'], 
@@ -258,17 +252,11 @@ def execute():
 
             w_cen.files = {'bus_pipeline':bus_pipeline, 'cen_per':cen_per, 'cen_pmax':cen_pmax}
 
-            w_cen.description = 'CEN Calculada'
-            w_cen.icon = 'check'
-            
     w_cen.on_click(on_button_clicked_cen)
 
     def on_downloadcen_clicked(obj):
         with downloadcen_output:
 
-            download_cen.description = 'Descargando Producción'
-            download_cen.icon = 'hourglass-2'
-            
             for sk in w_cen.files['bus_pipeline'].keys():
                 main_cols = ['Zenith, degree', 'Elevation, degree', 'Azimuth, degree', 'Airmass Relative, ad',  'Airmass Absolute, ad', 'Extraterrestrial Radiation, W/m2', 'POA, W/m2', 'Tmod, C', 'Pdc, W', 'Pac, W', 'Daily Energy, Wh', 'Weekly Energy, Wh', 'Monthly Energy, Wh']
 
@@ -491,9 +479,6 @@ def execute():
 
     def on_button_clicked_rp(obj):
         with output:
-            btn_rp.description = 'Cargando Archivos'
-            btn_rp.icon = 'hourglass-2'
-            
             output_upload.clear_output()
 
             system_config = []
@@ -504,7 +489,7 @@ def execute():
             df = cno.data.load_csv(file_name=upload_data_rp.files, tz=system_config[0]['tz'])
 
             btn_rp.files = {'system_configuration': system_config, 'df': df}
-            
+
             if len(upload_config_rp.files) == 1:
                 v_avail = '1'
             else:
@@ -524,8 +509,8 @@ def execute():
             w_startdate.value = sdate
             w_enddate.value = edate
             
-            btn_rp.description = 'Archivos Cargados'
-            btn_rp.icon = 'check'
+        btn_rp.description = 'Archivos Cargados'
+        btn_rp.icon = 'check'
 
     btn_rp.on_click(on_button_clicked_rp)
 
@@ -622,10 +607,7 @@ def execute():
         return json.loads(''.join(l))
 
     def on_button_clicked_bus(obj):
-        with rp_output:     
-            w_rp.description = 'Ejecutando'
-            w_rp.icon = 'hourglass-2'
-            
+        with rp_output:
             rp_output.clear_output()
             
             bus_pipeline = cno.pipeline.run(system_configuration=btn_rp.files['system_configuration'], 
@@ -642,9 +624,6 @@ def execute():
     def on_downloadrp_clicked(obj):
         with downloadrp_output:
 
-            download_rp.description = 'Descargando'
-            download_rp.icon = 'hourglass-2'
-            
             for sk in w_rp.files['bus_pipeline'].keys():
                 main_cols = ['Zenith, degree', 'Elevation, degree', 'Azimuth, degree', 'Airmass Relative, ad',  'Airmass Absolute, ad', 'Extraterrestrial Radiation, W/m2', 'POA, W/m2', 'Tmod, C', 'Pdc, W', 'Pac, W', 'Daily Energy, Wh', 'Weekly Energy, Wh', 'Monthly Energy, Wh']
                 
@@ -696,20 +675,9 @@ def execute():
             plot_output.clear_output()
 
             df_to_plot = w_rp.files['bus_pipeline']['plant']
-            
-            tz_loc = df_to_plot['p_dc'].index[0].tz
-            try:
-                start_plot_date = pd.to_datetime(w_startdate.value, format="%Y-%m-%d %H:%M:%S").tz_localize(tz_loc)
-            except:
-                start_plot_date = pd.to_datetime(w_startdate.value, format="%Y-%m-%d %H:%M:%S").tz_convert(tz_loc)
-                
-            try:
-                end_plot_date = pd.to_datetime(w_enddate.value, format="%Y-%m-%d %H:%M:%S").tz_localize(tz_loc)
-            except:
-                end_plot_date = pd.to_datetime(w_enddate.value, format="%Y-%m-%d %H:%M:%S").tz_convert(tz_loc)
-            
+
             if w_relation.value == 'Tiempo - Potencia DC':
-                yy = df_to_plot['p_dc'][start_plot_date:end_plot_date] / punits[w_units.value]
+                yy = df_to_plot['p_dc'][w_startdate.value:w_enddate.value] / punits[w_units.value]
 
                 title = 'Comportamiento Potencia DC'
                 xlab = 'Tiempo'
@@ -720,7 +688,7 @@ def execute():
                 plt.plot(yy, marker='.', ms=6.5, linewidth=0.5, color=w_plotcolor.value)
 
             elif w_relation.value == 'Tiempo - Potencia AC':
-                yy = df_to_plot['ac'][start_plot_date:end_plot_date] / punits[w_units.value]
+                yy = df_to_plot['ac'][w_startdate.value:w_enddate.value] / punits[w_units.value]
 
                 title = 'Comportamiento Potencia AC'
                 xlab = 'Tiempo'
@@ -731,7 +699,7 @@ def execute():
                 plt.plot(yy, marker='.', ms=6.5, linewidth=0.5, color=w_plotcolor.value)
 
             elif w_relation.value == 'Tiempo - Energía Diaria':
-                yy = df_to_plot['energy']['day'][start_plot_date:end_plot_date] / eunits[w_units.value]
+                yy = df_to_plot['energy']['day'][w_startdate.value:w_enddate.value] / eunits[w_units.value]
 
                 title = 'Comportamiento Energía Diaria'
                 xlab = 'Tiempo'
@@ -742,7 +710,7 @@ def execute():
                 plt.plot(yy, marker='.', ms=6.5, linewidth=0.5, color=w_plotcolor.value)
 
             elif w_relation.value == 'Tiempo - Energía Semanal':
-                yy = df_to_plot['energy']['week'][start_plot_date:end_plot_date] / eunits[w_units.value]
+                yy = df_to_plot['energy']['week'][w_startdate.value:w_enddate.value] / eunits[w_units.value]
 
                 title = 'Comportamiento Energía Semanal'
                 xlab = 'Tiempo'
@@ -753,7 +721,7 @@ def execute():
                 plt.plot(yy, marker='.', ms=6.5, linewidth=0.5, color=w_plotcolor.value)
 
             elif w_relation.value == 'Tiempo - Energía Mensual':
-                yy = df_to_plot['energy']['month'][start_plot_date:end_plot_date] / eunits[w_units.value]
+                yy = df_to_plot['energy']['month'][w_startdate.value:w_enddate.value] / eunits[w_units.value]
 
                 title = 'Comportamiento Energía Mensual'
                 xlab = 'Tiempo'
@@ -764,8 +732,8 @@ def execute():
                 plt.plot(yy, marker='.', ms=6.5, linewidth=0.5, color=w_plotcolor.value)
 
             elif w_relation.value == 'Irradiancia - Potencia DC':
-                xx = df_to_plot['poa'][start_plot_date:end_plot_date]
-                yy = df_to_plot['p_dc'][start_plot_date:end_plot_date] / punits[w_units.value]
+                xx = df_to_plot['poa'][w_startdate.value:w_enddate.value]
+                yy = df_to_plot['p_dc'][w_startdate.value:w_enddate.value] / punits[w_units.value]
 
                 title = 'Relación Irradiancia vs. Potencia DC'
                 xlab = 'Irradiancia POA, W/m2'
@@ -776,8 +744,8 @@ def execute():
                 plt.plot(xx, yy, ls='', marker='.', ms=0.5, fillstyle='none', color=w_plotcolor.value)
 
             else:
-                xx = df_to_plot['poa'][start_plot_date:end_plot_date]
-                yy = df_to_plot['ac'][start_plot_date:end_plot_date] / punits[w_units.value]
+                xx = df_to_plot['poa'][w_startdate.value:w_enddate.value]
+                yy = df_to_plot['ac'][w_startdate.value:w_enddate.value] / punits[w_units.value]
 
                 title = 'Relación Irradiancia vs. Potencia AC'
                 xlab = 'Irradiancia POA, W/m2'
@@ -839,13 +807,11 @@ def execute():
     ###############################
     #            GUI              #
     ###############################
+
     item_layout = widgets.Layout(margin='0 0 25px 0')
 
     tab = widgets.Tab([tab_doc, tab_protocols, tab_rp], layout=item_layout)
     tab.set_title(0, 'Documentación')
     tab.set_title(1, 'CEN')
     tab.set_title(2, 'Recurso-Potencia')
-    
-
-    dashboard = widgets.VBox([tab])
-    display(dashboard)
+    display(tab)
