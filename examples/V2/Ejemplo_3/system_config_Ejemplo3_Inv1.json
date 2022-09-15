@@ -1,0 +1,55 @@
+{
+  "latitude": 4.604535,
+  "longitude": -74.066038,
+  "tz": "America/Bogota",
+  "altitude": 2632.0,
+  "surface_albedo": 0.18,
+  "inverter": {
+    "Pdco": 28199.2,
+    "eta_inv_nom": 0.98
+  },
+  "ac_model": "pvwatts",
+  "module": {
+    "T_NOCT": 44.0,
+    "Technology": "multisi",
+    "N_s": 72.0,
+    "I_sc_ref": 11.35,
+    "V_oc_ref": 48.6,
+    "I_mp_ref": 10.85,
+    "V_mp_ref": 40.1,
+    "alpha_sc": 0.038996,
+    "beta_oc": -0.27,
+    "gamma_r": -0.361,
+    "STC": 406.3
+  },
+  "bifacial": true,
+  "bifaciality": 0.7,
+  "row_height": 1.0,
+  "row_width": 2.132,
+  "num_arrays": 1,
+  "modules_per_string": [
+    10
+  ],
+  "strings_per_inverter": [
+    7
+  ],
+  "num_inverter": 4,
+  "with_tracker": true,
+  "surface_tilt": null,
+  "surface_azimuth": null,
+  "axis_tilt": [
+    0.0
+  ],
+  "axis_azimuth": [
+    180.0
+  ],
+  "max_angle": [
+    45.0
+  ],
+  "module_type": "glass_glass",
+  "loss": 14.6,
+  "kpc": 0.0,
+  "kt": 0.0,
+  "kin": 0.0,
+  "name": "Ejemplo3_Inv1"
+}

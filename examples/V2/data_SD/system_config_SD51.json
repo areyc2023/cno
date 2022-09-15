@@ -1,0 +1,60 @@
+{
+  "latitude": 4.604535,
+  "longitude": -74.066038,
+  "tz": "America/Bogota",
+  "altitude": 2632.0,
+  "surface_albedo": 0.18,
+  "inverter": {
+    "Paco": 50000.0,
+    "Pdco": 50881.769531,
+    "Vdco": 720.0,
+    "Pso": 143.487045,
+    "C0": -1.28775e-07,
+    "C1": -2.4e-05,
+    "C2": 0.001013,
+    "C3": -0.000319,
+    "Pnt": 1.0
+  },
+  "ac_model": "sandia",
+  "module": {
+    "T_NOCT": 47.7,
+    "Technology": "monosi",
+    "N_s": 72.0,
+    "I_sc_ref": 10.47,
+    "V_oc_ref": 49.3,
+    "I_mp_ref": 9.86,
+    "V_mp_ref": 40.6,
+    "alpha_sc": 0.027674,
+    "beta_oc": -0.263744,
+    "gamma_r": -0.36,
+    "STC": 400.316
+  },
+  "bifacial": false,
+  "bifaciality": 0.0,
+  "row_height": 0.0,
+  "row_width": 0.0,
+  "num_arrays": 1,
+  "modules_per_string": [
+    16
+  ],
+  "strings_per_inverter": [
+    8
+  ],
+  "num_inverter": 1,
+  "with_tracker": false,
+  "surface_tilt": [
+    10.0
+  ],
+  "surface_azimuth": [
+    180.0
+  ],
+  "axis_tilt": null,
+  "axis_azimuth": null,
+  "max_angle": null,
+  "module_type": "glass_glass",
+  "loss": 26.9,
+  "kpc": 0.0,
+  "kt": 0.0,
+  "kin": 0.0,
+  "name": "SD51"
+}
