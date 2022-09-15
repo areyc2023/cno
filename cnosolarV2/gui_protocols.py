@@ -13,8 +13,6 @@ from tkinter import Tk, filedialog
 from IPython.display import display
 get_ipython().run_line_magic('matplotlib', 'inline')
 
-import cnosolar as cno
-
 def execute():
     '''
     Graphical user interface for the execution of the protocols defined 
