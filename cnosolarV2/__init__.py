@@ -19,7 +19,7 @@ from cnosolarV2 import location_data
 from cnosolarV2 import pipeline
 from cnosolarV2 import production
 from cnosolarV2 import pvstructure
-from cnosolarV2.pvsyst_tools import pvsyst
+from cnosolar.pvsyst_tools import pvsyst
 
 if __name__ == '__main__':
     print(f'Successfully executed from {__name__}.')
