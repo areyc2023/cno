@@ -376,7 +376,7 @@ def execute():
             emin_output.clear_output()
 
             if len(w_cen.files['bus_pipeline'].keys()) == 1:
-                energy_data = w_cen.files['bus_pipeline']['plant']['system']['energy']
+                energy_data = w_cen.files['bus_pipeline']['plant']['energy']
             else:
                 energy_data = w_cen.files['bus_pipeline']['plant']['energy']
 
@@ -393,7 +393,7 @@ def execute():
             eminplot_output.clear_output()
 
             if len(w_cen.files['bus_pipeline'].keys()) == 1:
-                energy_to_plot = w_cen.files['bus_pipeline']['plant']['system']['energy']['day']
+                energy_to_plot = w_cen.files['bus_pipeline']['plant']['energy']['day']
             else:
                 energy_to_plot = w_cen.files['bus_pipeline']['plant']['energy']['day']
 
