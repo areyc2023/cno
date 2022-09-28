@@ -274,11 +274,19 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
 
     Albedo característico del terreno.
 
-6. inverter : dict
+6. inverter_name : string
+
+    Referencia completa del inversor incluyendo el fabricante y modelo.
+
+7. ac_model : string
+
+    Método a usar para el modelamiento del inversor. Las opciones válidas son: sandia o pvwatts. El modelo de *sandia* requiere la definición de 9 parámetros del inversor, mientras el modelo *pvwatts* requiere solo de 2.
+
+8. inverter : dict
 
     **Parámetros técnicos del inversor.**
 
-    Parámetros para utilizar el método *SNL PVlib*:
+    Parámetros para utilizar el método *sandia*:
 
     1. Paco: Potencia de salida AC nominal del inversor en W.
     2. Pdco: Potencia de entrada DC nominal del inversor en W.
@@ -295,16 +303,16 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
 	   como función del voltaje DC en 1/V.
     9. Pnt: Potencia AC consumida por el inversor en W.
 
-    Parámetros para utilizar el método *NREL PVWatts*:
+    Parámetros para utilizar el método *pvwatts*:
 
     1. Pdco: Potencia DC nominal del inversor en W.
     2. eta_inv_nom: Eficiencia nominal del inversor adimensional.
-    
-7. ac_model : string
 
-    Método a usar para el modelamiento del inversor. Las opciones válidas son: sandia o pvwatts. El modelo de *sandia* requiere la definición de 9 parámetros del inversor, mientras el modelo *pvwatts* requiere solo de 2.
+9. module_name : string
+        
+    Referencia completa del módulo solar fotovoltaico incluyendo el fabricante y modelo.
 
-8. module : dict
+10. module : dict
 
     **Parámetros técnicos del módulo solar fotovoltaico.**
 
@@ -320,85 +328,85 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
     10. gamma_r: Coeficiente térmico de potencia en el punto de mayor potencia en %/ºC.
     11. STC: Potencia nominal del módulo bajo condiciones STC en W.
           
-9. bifacial : bool
+11. bifacial : bool
 
     Define si el módulo es bifacial o no.
 
-10. bifaciality : float
+12. bifaciality : float
 
     Fracción entre la eficiencia del frente y la parte trasera del módulo solar fotovoltaico, medido bajo condiciones STC.
 
-11. row_height : float
+13. row_height : float
 
     Altura de las filas de los módulos solares medido en su centro en m.
 
-12. row_width : float
+14. row_width : float
 
     Ancho de las filas de módulos solares en el plano 2D en unidades de metros (por ejemplo, 1P, 2P, 4L).
 
-13. num_arrays : int
+15. num_arrays : int
 
     Número de subarreglos conectados al inversor. Para cada subarreglo se define el número de módulos en serie en un *string*, *strings* en paralelo, y fracción de la entradas al inversor.
 
-14. modules_per_string : list[int]
+16. modules_per_string : list[int]
 
     Número de módulos en serie por string en un subarreglo.
 
-15. strings_per_inverter : list[int]
+17. strings_per_inverter : list[int]
 
     Número de strings en paralelo en cada subarreglo.
 
-16. num_inverter : int
+18. num_inverter : int
 
     Número de inversores con configuración eléctrica idéntica a la definida en el archivo de configuración. Permite escalar el cálculo de la potencia producida.
 
-17. with_tracker : bool
+19. with_tracker : bool
 
     Parámetro que define si los arreglso están montados en estructuras fijas o con seguimiento a un eje.
 
-18. surface_azimuth : list[float]
+20. surface_azimuth : list[float]
 
     Ángulo azimutal de la superficie del módulo. Norte = 0, Este = 90, 
         Sur = 180 y Oeste = 270. Si `with_tracker = true`, el valor se asigna a `null`.
 
-19. surface_tilt : list[float]
+21. surface_tilt : list[float]
 
     Inclinación de la superficie de los módulos. La inclinación se asigna desde la horizontal (por ejemplo, superficie horizontal = 0, superficie hasta el horizonte = 90). Si `with_tracker = true`, el valor se asigna a `null`.
     
-20. axis_tilt : list[float]
+22. axis_tilt : list[float]
 
     Inclinación del eje de rotación con respecto a la horizontal (por ejemplo, un valor de 0º indica que el eje de rotación de los módulos se encuentra horizontal) en [grados]. Si `with_tracker = false`, el valor se asigna a `null`.
 
-21. axis_azimuth : list[float]
+23. axis_azimuth : list[float]
 
     Ángulo perpendicular al eje de rotación siguiendo la regla de la mano derecha (por ejemplo, un valor de 180º indica una rotation de este a oeste) en [grados]. Si `with_tracker = false`, el valor se asigna a `null`.
 
-22. max_angle : list[float]
+24. max_angle : list[float]
 
         Máximo angulo de rotación del seguidor desde su posición horizontal (por ejemplo, un valor de 90º permite al seguidor girar desde y hasta la posición vertical donde las caras del módulo miran al horizonte) en [grados]. Si `with_tracker = false`, el valor se asigna a `null`.
 
-23. module_type : string
+24. module_type : string
 
     Método de montaje de los módulos solares y materiales del frente y parte trasera de los mismos. Las opciones válidas son: `open_rack_glass_glass`, `close_mount_glass_glass` o `insulated_back_glass_polymer`.
 
-24. loss : float
+25. loss : float
 
     Pérdidas globales del sistema del lado DC en porcentaje.
     Valor por defecto = 14.6
     
-25. kpc : float
+26. kpc : float
 
     Pérdidas de transmisión hasta el punto común de acople de los inversores en porcentaje.
 
-26. kt : float
+27. kt : float
 
     Pérdidas asociadas a la transformación (elevación de tensión) en porcentaje.
 
-27. kin: float
+28. kin: float
 
     Pérdidas de interconexión, transmisión hasta el punto de conexión en porcentaje.
 
-28. name : string
+29. name : string
 
     Nombre de la configuración de planta.
     
