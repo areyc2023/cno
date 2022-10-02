@@ -167,18 +167,48 @@ def run(system_configuration, data, availability, energy_units):
         if len(check) > 0:            
             for i in [module_tec, 'monoSi','multiSi','polySi','cis','cigs','cdte','amorphous']:
                 try:
-                    I_L_ref, I_o_ref, R_s, R_sh_ref, a_ref, Adjust = pvlib.ivtools.sdm.fit_cec_sam(celltype=i, 
-                                                                                                   v_mp=_module['V_mp_ref'], 
-                                                                                                   i_mp=_module['I_mp_ref'], 
-                                                                                                   v_oc=_module['V_oc_ref'], 
-                                                                                                   i_sc=_module['I_sc_ref'], 
-                                                                                                   alpha_sc=(_module['alpha_sc']/100)*_module['I_sc_ref'], 
-                                                                                                   beta_voc=(_module['beta_oc']/100)*_module['V_oc_ref'], 
-                                                                                                   gamma_pmp=_module['gamma_r'], 
-                                                                                                   cells_in_series=_module['N_s'], 
-                                                                                                   temp_ref=25)
+                    cec = pvlib.ivtools.sdm.fit_cec_sam(celltype=i, 
+                                                        v_mp=_module['V_mp_ref'], 
+                                                        i_mp=_module['I_mp_ref'], 
+                                                        v_oc=_module['V_oc_ref'], 
+                                                        i_sc=_module['I_sc_ref'], 
+                                                        alpha_sc=(_module['alpha_sc']/100)*_module['I_sc_ref'], 
+                                                        beta_voc=(_module['beta_oc']/100)*_module['V_oc_ref'], 
+                                                        gamma_pmp=_module['gamma_r'], 
+                                                        cells_in_series=_module['N_s'], 
+                                                        temp_ref=25)
+                    
+                    I_L_ref = cec[0]
+                    I_o_ref = cec[1]
+                    R_s = cec[2]
+                    R_sh_ref = cec[3]
+                    a_ref = cec[4]
+                    Adjust = cec[5]
+                    
                 except:
-                    I_L_ref, I_o_ref, R_s, R_sh_ref, a_ref, Adjust = None, None, None, None, None, None
+                    try:
+                        desoto = pvlib.ivtools.sdm.fit_desoto(v_mp=_module['V_mp_ref'], 
+                                                              i_mp=_module['I_mp_ref'], 
+                                                              v_oc=_module['V_oc_ref'], 
+                                                              i_sc=_module['I_sc_ref'], 
+                                                              alpha_sc=(_module['alpha_sc']/100)*_module['I_sc_ref'], 
+                                                              beta_voc=(_module['beta_oc']/100)*_module['V_oc_ref'], 
+                                                              cells_in_series=_module['N_s'], 
+                                                              EgRef=1.121, 
+                                                              dEgdT=-0.0002677, 
+                                                              temp_ref=25, 
+                                                              irrad_ref=1000,
+                                                              root_kwargs={'method':'lm'})
+                        
+                        I_L_ref = desoto[0]['I_L_ref']
+                        I_o_ref = desoto[0]['I_o_ref']
+                        R_s = desoto[0]['R_s']
+                        R_sh_ref = desoto[0]['R_sh_ref']
+                        a_ref = desoto[0]['a_ref']
+                        Adjust = 0
+                        
+                    except:
+                        I_L_ref, I_o_ref, R_s, R_sh_ref, a_ref, Adjust = None, None, None, None, None, None
 
                 if I_L_ref != None:
                     break
@@ -189,7 +219,7 @@ def run(system_configuration, data, availability, energy_units):
                                  'R_sh_ref': R_sh_ref, 
                                  'a_ref': a_ref,
                                  'Adjust': Adjust})
-        
+
         # Temporal Parameters List
         if num_systems > 1:
             superkey = f'inverter{j+1}'

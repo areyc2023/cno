@@ -182,7 +182,7 @@ def run(system_configuration, data, availability, energy_units):
                                  'R_sh_ref':R_sh_ref, 
                                  'a_ref':a_ref,
                                  'Adjust':Adjust})
-        
+
         # Temporal Parameters List
         if num_systems > 1:
             superkey = f'inverter{j+1}'

@@ -205,8 +205,8 @@ def execute():
     doc_location = widgets.HTML('''
                                 <h5>Información Geográfica</h5>
                                 <ul>
-                                  <li> <b>Latitud:</b> Utilice la notación de grados decimales.</li>
-                                  <li> <b>Longitud:</b> Utilice la notación de grados decimales.</li>
+                                  <li> <b>Latitud:</b> Utilice la notación de grados decimales; se requieren 5 decimales.</li>
+                                  <li> <b>Longitud:</b> Utilice la notación de grados decimales; se requieren 5 decimales.</li>
                                   <li> <b>Altitud:</b> Altitud desde el nivel del mar en metros (m.s.n.m).</li>
                                   <li> <b>Huso Horario:</b> Con referencia a UTC. Por defecto: América/Bogotá (UTC-5).</li>
                                   <li> <b>Superficie:</b> Tipo de superficie para determinar el albedo. <span style='color:red'>Opcional si desconoce el albedo</span>.</li>
@@ -216,7 +216,7 @@ def execute():
     doc_inverter = widgets.HTMLMath('''
                                     <h5>Método de Configuración: Repositorio</h5>
                                     <ul>
-                                      <li> <b>Repositorio:</b> Repositorio de inversores dispuestos por PVlib.</li>
+                                      <li> <b>Repositorio:</b> Repositorio de inversores dispuestos por PVlib (CEC).</li>
                                       <li> <b>Fabricantes:</b> Lista de fabricantes del repositorio seleccionado.</li>
                                       <li> <b>Inversores:</b> Lista de equipos disponibles en el repositorio según el fabricante seleccionado.</li>
                                     </ul>
@@ -228,7 +228,7 @@ def execute():
 
                                     <h5>Método de Configuración: Manual</h5>
                                     <ul>
-                                      <li> <b>SNL PVlib</b> 
+                                      <li> <b>Sandia</b> 
                                        <ul class='square'>
                                          <li> <b>$P_{AC}$ Nominal:</b> Potencia AC nominal del inversor en W.</li>
                                          <li> <b>$P_{DC}$ Nominal:</b> Potencia DC nominal del inversor en W.</li>
@@ -239,13 +239,15 @@ def execute():
                                          <li> <b>$C_2$:</b> Coeficiente empírico que permite que la Potencia DC de Arranque varíe linealmente con el Voltaje DC en 1/V.</li>
                                          <li> <b>$C_3$:</b> Coeficiente empírico que permite que $C_0$ varíe linealmente con el Voltaje DC en 1/V.</li>
                                          <li> <b>$P_{AC}$ Consumo Nocturno:</b> Potencia AC consumida por el inversor durante la noche en W.</li>
+                                         <li> <b>Referencia Inversor:</b> Referencia completa del inversor incluyendo el fabricante y modelo.</li>
                                        </ul>
                                       </li>
 
-                                      <li> <b>NREL PVWatts</b> 
+                                      <li> <b>PVWatts</b> 
                                        <ul class='square'>
                                          <li> <b>$P_{DC}$ Nominal:</b> Potencia DC nominal del inversor en W.</li>
                                          <li> <b>Eficiencia Nominal:</b> Eficiencia nominal del inversor en magnitud adimensional.</li>
+                                         <li> <b>Referencia Inversor:</b> Referencia completa del inversor incluyendo el fabricante y modelo.</li>
                                        </ul>
                                       </li>
                                     </ul>
@@ -254,7 +256,7 @@ def execute():
     doc_module = widgets.HTMLMath('''
                                   <h5>Método de Configuración: Repositorio</h5>
                                   <ul>
-                                    <li> <b>Repositorio:</b> Repositorio de módulos fotovoltaicos dispuestos por PVlib (CEC y Sandia).</li>
+                                    <li> <b>Repositorio:</b> Repositorio de módulos fotovoltaicos dispuestos por PVlib (CEC).</li>
                                     <li> <b>PVFree</b> 
                                      <ul class='square'>
                                        <li> <b>Base de Datos:</b> Repositorio de módulos fotovoltaicos dispuestos en PVFree.</li>
@@ -288,6 +290,7 @@ def execute():
                                     <li> <b>Coef. Temp. $V_{OC}$:</b> Coeficiente de temperatura de voltaje de circuito abierto en %/ºC. </li>
                                     <li> <b>Coef. Temp. $P_{MP}$:</b> Coeficiente de temperatura de la potencia en el punto máximo en %/ºC. </li>
                                     <li> <b>$P_{Nominal}$ en STC:</b> Potencia nominal del módulo fotovoltaico en condiciones STC en W.</li>
+                                    <li> <b>Referencia Módulo:</b> Referencia completa del módulo solar fotovoltaico incluyendo el fabricante y modelo.</li>
                                   </ul>
                                   
                                   <h5>Parámetros Bifacialidad</h5>
@@ -441,7 +444,7 @@ def execute():
                                                                       flex_flow='column',
                                                                       border='solid 0px',
                                                                       align_items='stretch',
-                                                                      width='50%'))
+                                                                      width='60%'))
 
     ###############################
     #        INVERTER TAB         #
@@ -459,7 +462,7 @@ def execute():
                                          disabled=False,
                                          button_style='',
                                          tooltips=['Base de datos de PVlib', 
-                                                   'Importar desde PVsyst', 
+                                                   'Importar desde archivo de PVsyst', 
                                                    'Configuración manual'])
 
     # REPOSITORY
@@ -492,7 +495,7 @@ def execute():
             # Create the button
             self.description = 'Seleccionar'
             self.icon = 'square-o'
-            self.layout = widgets.Layout(width='34%', height='auto')
+            self.layout = widgets.Layout(width='35%', height='auto')
 
             # Set on click behavior
             self.on_click(self.select_files)
@@ -522,10 +525,10 @@ def execute():
     btn = widgets.Button(value=False,
                          description='Cargar OND',
                          disabled=False,
-                         button_style='', # 'success', 'info', 'warning', 'danger' or ''
+                         button_style='',
                          tooltip='Cargar los archivos .OND',
                          icon='circle',
-                         layout=widgets.Layout(width='34%', height='auto'))
+                         layout=widgets.Layout(width='35%', height='auto'))
 
     btn.add_traits(files=traitlets.traitlets.Dict())
 
@@ -533,7 +536,7 @@ def execute():
                              widgets.Box([widgets.Label('Archivo Inversor (.OND)'), upload_btn, btn], layout=gui_layout)])
 
     # Manual Widgets
-    dropdown_manual = widgets.Dropdown(options=['', 'SNL PVlib', 'NREL PVWatts'],
+    dropdown_manual = widgets.Dropdown(options=['', 'Sandia', 'PVWatts'],
                                        value=None,
                                        description='')
     
@@ -599,12 +602,12 @@ def execute():
                         'Mppt_high': float(ond['pvGInverter']['TConverter']['VMPPMax']), # Alto Voltaje
                         'eta_inv_nom': float(ond['pvGInverter']['TConverter']['EfficEuro']),
                         'eta_inv_ref': 0.9637,
-                        'Name': ond['pvGInverter']['pvCommercial']['Model']}
+                        'Name': '{} {}'.format(ond['pvGInverter']['pvCommercial']['Manufacturer'], ond['pvGInverter']['pvCommercial']['Model'])}
             btn.files = {'inv': inverter}
 
     # MANUAL
     def handle_dropdown_manual(change):    
-        if change['new'] == 'SNL PVlib':
+        if change['new'] == 'Sandia':
             w_Paco = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_Pdco = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_Vdco = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
@@ -614,8 +617,9 @@ def execute():
             w_C2 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_C3 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_Pnt = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style={'description_width': 'initial'})
 
-            inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración SNL PVlib</h5>', layout=widgets.Layout(height='auto'))]),
+            inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Sandia</h5>', layout=widgets.Layout(height='auto'))]),
                                      widgets.Box([widgets.Label('$P_{AC}$ Nominal  [W]'), w_Paco], layout=gui_layout),
                                      widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_Pdco], layout=gui_layout),
                                      widgets.Box([widgets.Label('$V_{DC}$ Nominal [V]'), w_Vdco], layout=gui_layout),
@@ -624,17 +628,20 @@ def execute():
                                      widgets.Box([widgets.Label('$C_1$ [1/V]'), w_C1], layout=gui_layout),
                                      widgets.Box([widgets.Label('$C_2$ [1/V]'), w_C2], layout=gui_layout),
                                      widgets.Box([widgets.Label('$C_3$ [1/V]'), w_C3], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$P_{AC}$ Consumo Nocturno [W]'), w_Pnt], layout=gui_layout)])
+                                     widgets.Box([widgets.Label('$P_{AC}$ Consumo Nocturno [W]'), w_Pnt], layout=gui_layout),
+                                     widgets.Box([widgets.Label('Referencia Inversor'), w_Name], layout=gui_layout)])
 
             inverter_vbox.children = [inverter_btn, w_dropmanual, inv_conf]
 
         else:
             w_pdc0 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
             w_eta_inv_nom = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.01, description='', style={'description_width': 'initial'})
+            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style={'description_width': 'initial'})
 
-            inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración NREL PVWatts</h5>', layout=widgets.Layout(height='auto'))]),
+            inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración PVWatts</h5>', layout=widgets.Layout(height='auto'))]),
                                      widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_pdc0], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Eficiencia Nominal [ad.]'), w_eta_inv_nom], layout=gui_layout)])
+                                     widgets.Box([widgets.Label('Eficiencia Nominal [ad.]'), w_eta_inv_nom], layout=gui_layout),
+                                     widgets.Box([widgets.Label('Referencia Inversor'), w_Name], layout=gui_layout)])
 
             inverter_vbox.children = [inverter_btn, w_dropmanual, inv_conf]
 
@@ -652,7 +659,7 @@ def execute():
                                                       flex_flow='column',
                                                       border='solid 0px',
                                                       align_items='stretch',
-                                                      width='50%'))
+                                                      width='60%'))
 
     ###############################
     #         MODULE TAB          #
@@ -671,7 +678,7 @@ def execute():
                                        disabled=False,
                                        button_style='', # 'success', 'info', 'warning', 'danger' or ''
                                        tooltips=['Base de datos de PVlib', 
-                                                 'Importar desde PVsyst', 
+                                                 'Importar desde archivo de PVsyst', 
                                                  'Configuración manual'])
 
     # REPOSITORY
@@ -704,7 +711,7 @@ def execute():
             # Create the button
             self.description = 'Seleccionar'
             self.icon = 'square-o'
-            self.layout = widgets.Layout(width='34%', height='auto')
+            self.layout = widgets.Layout(width='35%', height='auto')
 
             # Set on click behavior
             self.on_click(self.select_files)
@@ -737,7 +744,7 @@ def execute():
                             button_style='',
                             tooltip='Cargar los archivos .PAN',
                             icon='circle',
-                            layout=widgets.Layout(width='34%', height='auto'))
+                            layout=widgets.Layout(width='35%', height='auto'))
 
     modbtn.add_traits(files=traitlets.traitlets.Dict())
     modbtn_output = widgets.Output()
@@ -779,9 +786,10 @@ def execute():
             w_beta_oc = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
             w_gamma_r = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
             w_STC = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
+            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style={'description_width': 'initial'})
 
             mod_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Módulo</h5>', layout=widgets.Layout(height='auto'))]),
-                                     widgets.Box([widgets.Label('$T_{NOCT}$  [ºC]'), w_T_NOCT], layout=gui_layout),
+                                     widgets.Box([widgets.Label('$T_{NOCT}$ [ºC]'), w_T_NOCT], layout=gui_layout),
                                      widgets.Box([widgets.Label('Tecnología'), w_Type], layout=gui_layout),
                                      widgets.Box([widgets.Label('Número Celdas'), w_N_s], layout=gui_layout),
                                      widgets.Box([widgets.Label('$I_{SC}$ en STC [A]'), w_I_sc_ref], layout=gui_layout),
@@ -791,7 +799,8 @@ def execute():
                                      widgets.Box([widgets.Label('Coef. Temp. $I_{SC}$ [%/ºC]'), w_alpha_sc], layout=gui_layout),
                                      widgets.Box([widgets.Label('Coef. Temp. $V_{OC}$ [%/ºC]'), w_beta_oc], layout=gui_layout),
                                      widgets.Box([widgets.Label('Coef. Temp. $P_{MP}$ [%/ºC]'), w_gamma_r], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$P_{Nominal}$ en STC [W]'), w_STC], layout=gui_layout)])
+                                     widgets.Box([widgets.Label('$P_{Nominal}$ en STC [W]'), w_STC], layout=gui_layout),
+                                     widgets.Box([widgets.Label('Referencia Módulo'), w_Name], layout=gui_layout)])
 
             module_vbox.children = [module_btn, mod_conf]
 
@@ -889,7 +898,7 @@ def execute():
                                                     flex_flow='column',
                                                     border='solid 0px',
                                                     align_items='stretch',
-                                                    width='50%'))
+                                                    width='60%'))
 
     ###############################
     #  SYSTEM CONFIGURATION TAB   #
@@ -933,7 +942,7 @@ def execute():
                                         options=['Sin Seguidor', 'Seguidor 1-Eje'],
                                         description='',
                                         disabled=False,
-                                        button_style='', # 'success', 'info', 'warning', 'danger' or ''
+                                        button_style='',
                                         tooltips=['Montaje con estructura fija', 
                                                   'Montaje con single-axis tracker'])
 
@@ -943,7 +952,7 @@ def execute():
         if change['new'] == 'Sin Seguidor':
             w_Azimuth = widgets.Text(value=None, description='', style={'description_width': 'initial'})
             w_Tilt = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-            w_Racking = widgets.Dropdown(options=['', 'open_rack', 'close_mount', 'insulated_back'], value=None, description='', style={'description_width': 'initial'})
+            w_Racking = widgets.Dropdown(options=['open_rack', 'close_mount', 'insulated_back'], value='open_rack', description='', style={'description_width': 'initial'})
 
             if w_subarrays.value == 1:
                 v_angles = '0.0'
@@ -964,7 +973,7 @@ def execute():
             w_AxisTilt = widgets.Text(value=None, description='', style={'description_width': 'initial'})
             w_AxisAzimuth = widgets.Text(value=None, description='', style={'description_width': 'initial'})
             w_MaxAngle = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-            w_Racking = widgets.Dropdown(options=['', 'open_rack', 'close_mount', 'insulated_back'], value=None, description='', style={'description_width': 'initial'})
+            w_Racking = widgets.Dropdown(options=['open_rack', 'close_mount', 'insulated_back'], value='open_rack', description='', style={'description_width': 'initial'})
 
             if w_subarrays.value == 1:
                 v_angles = '0.0'
@@ -1006,10 +1015,10 @@ def execute():
     genconfig_btn = widgets.Button(value=False,
                                    description='Generar Configuración',
                                    disabled=False,
-                                   button_style='', # 'success', 'info', 'warning', 'danger' or ''
+                                   button_style='',
                                    tooltip='Generar Configuración del Sistema',
                                    icon='gear',
-                                   layout=widgets.Layout(width='50%', height='auto'))
+                                   layout=widgets.Layout(width='60%', height='auto'))
 
     genconfig_output = widgets.Output()
 
@@ -1036,7 +1045,7 @@ def execute():
                                   button_style='',
                                   tooltip='Descarga JSON de la Configuración del Sistema',
                                   icon='download',
-                                  layout=widgets.Layout(width='50%', height='auto'))
+                                  layout=widgets.Layout(width='60%', height='auto'))
     output = widgets.Output()
 
     def on_button_clicked(obj):
@@ -1076,7 +1085,7 @@ def execute():
                                                        flex_flow='column',
                                                        border='solid 0px',
                                                        align_items='stretch',
-                                                       width='50%'))
+                                                       width='60%'))
 
     ###############################
     #            GUI              #
@@ -1114,7 +1123,7 @@ def execute():
             inverter = btn.files['inv']
 
             inverters_database = None
-            inverter_name = None
+            inverter_name = inverter['Name'] 
             
             ac_model = 'pvwatts'
 
@@ -1122,7 +1131,7 @@ def execute():
                         'eta_inv_nom': inverter['eta_inv_nom']}
 
         if inverter_btn.value == 'Manual':
-            if dropdown_manual.value == 'SNL PVlib':
+            if dropdown_manual.value == 'Sandia':
                 ac_model = 'sandia'
                     
                 inverter = {'Paco': inverter_vbox.children[2].children[1].children[1].value,
@@ -1134,15 +1143,21 @@ def execute():
                             'C2': inverter_vbox.children[2].children[7].children[1].value,
                             'C3': inverter_vbox.children[2].children[8].children[1].value,
                             'Pnt': inverter_vbox.children[2].children[9].children[1].value}
+                
+                inverter_name = inverter_vbox.children[2].children[10].children[1].value
 
-            elif dropdown_manual.value == 'NREL PVWatts':
+            elif dropdown_manual.value == 'PVWatts':
                 ac_model = 'pvwatts'
                 
                 inverter = {'Pdco': inverter_vbox.children[2].children[1].children[1].value,
                             'eta_inv_nom': inverter_vbox.children[2].children[2].children[1].value}
+                
+                inverter_name = inverter_vbox.children[2].children[3].children[1].value
 
+            else:
+                inverter_name = None
+                
             inverters_database = None
-            inverter_name = None
 
         return [inverters_database, inverter_name, inverter, ac_model]
 
@@ -1215,10 +1230,11 @@ def execute():
                 
         if module_btn.value == 'PVsyst':
             module = modbtn.files['mod']
+
             module['a_ref'] = module['Gamma'] * module['NCelS'] * (1.38e-23 * (273.15 + 25) / 1.6e-19)
 
             modules_database = None
-            modules_name = None   
+            modules_name = '{} {}'.format(module['manufacturer'], module['module_name'])   
             
             module = {'T_NOCT': module['TRef']+20,
                       'Technology': module['Technol'],
@@ -1249,7 +1265,7 @@ def execute():
                       'STC': module_vbox.children[1].children[11].children[1].value}
 
             modules_database = None
-            modules_name = None
+            modules_name = module_vbox.children[1].children[12].children[1].value
         
         t = module['Technology']
         if t in ['Mono-c-Si', 'monoSi', 'monosi', 'c-Si', 'xsi', 'mtSiMono']:
@@ -1362,13 +1378,13 @@ def execute():
 
                                 # Inverter
                                 #'inverters_database': inverter_status[0],
-                                #'inverter_name': inverter_status[1],
+                                'inverter_name': inverter_status[1],
                                 'inverter': dict(inverter_status[2]),
                                 'ac_model': inverter_status[3],
 
                                 # PV Module
                                 #'modules_database': module_status[0],
-                                #'module_name': module_status[1],
+                                'module_name': module_status[1],
                                 'module': dict(module_status[2]),
                                 'bifacial': module_status[3],
                                 'bifaciality': module_status[4],
