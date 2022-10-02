@@ -67,7 +67,7 @@ $ conda install pvlib==0.9.0
 Para instalar las librerías especificadas en el archivo `requirements.txt`, por favor use una de las siguientes opciones:
 
 ```python
-$ conda install --file requirements.txt
+$ conda install -c conda-forge --file requirements.txt
 $ pip install -r requirements.txt
 ```
 
