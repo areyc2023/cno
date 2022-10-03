@@ -20,7 +20,7 @@ logo-width: 380pt
 lang: es-CO
 ---
 
-[//]: pandoc -F pandoc-crossref --citeproc --template eisvogel 2021-protocolo-curva-recurso-potencia_v4.txt -o 2021-protocolo-curva-recurso-potencia_v4.pdf
+[//]: pandoc -F pandoc-crossref --citeproc --template eisvogel 2021-protocolo-curva-recurso-potencia_v4_XM.txt -o 2021-protocolo-curva-recurso-potencia_v4.pdf
 
 # Introducción
 
@@ -95,9 +95,9 @@ En caso de que los módulos sean bifaciales, se requieren los parámetros defini
 
 ### Inversores
 
-El modelamiento de los inversores permite dos métodos: *Sandia National Laboratories* (SNL) y *National Renewable Energy Laboratory* (NREL - PVWatts); el segundo con menos parámetros requeridos que el primero a expensas de una representación menos precisa del rendimiento del inversor y, por ende, un modelo más simple.
+El modelamiento de los inversores permite dos métodos: *Sandia National Laboratories - PVlib* (sandia) y *National Renewable Energy Laboratory - PVWatts* (pvwatts); el segundo con menos parámetros requeridos que el primero a al ser un modelo más simple y, por ende, una representación menos precisa del rendimiento del inversor. Sin embargo, pruebas realizadas por los autores han demostrado que el aumento en el error no es significativo.
 
-Para el modelamiento de los inversores con el método *SNL* se requiere la definición de los siguientes parámetros:
+Para el modelamiento de los inversores con el método *sandia* se requiere la definición de los siguientes parámetros:
 
 * $P_{AC}$ Nominal: Potencia AC nominal del inversor en W.
 * $P_{DC}$ Nominal: Potencia DC nominal del inversor en W.
@@ -109,7 +109,7 @@ Para el modelamiento de los inversores con el método *SNL* se requiere la defin
 * $C_3$: Coeficiente empírico que permite que $C_0$ varíe linealmente con el Voltaje DC en 1/V.
 * $P_{AC}$ Consumo Nocturno: Potencia AC consumida por el inversor durante la noche en W.
 
-Por otra parte, con el método *NREL - PVWatts* se requiere la definición de los siguientes parámetros:
+Por otra parte, con el método *pvwatts* se requiere la definición de los siguientes parámetros:
 
 * $P_{DC}$ Nominal: Potencia DC nominal del inversor en W.
 * Eficiencia Nominal: Eficiencia nominal del inversor en magnitud adimensional.
@@ -120,7 +120,7 @@ Finalmente, se debe realizar la configuración de la arquitectura de la planta m
 
 #### Subarrays
 
-* Cantidad Subarrays: Conjunto de arreglos conectados a un inversor. Cada subarray se compone de módulos en serie por string, strings en paralelo y el número de entradas al inversor (ya sea entradas completas por inversor o número de entradas MPPT).
+* Cantidad Subarrays: Conjunto de arreglos conectados a un inversor. Cada subarray corresponde a una configuración de módulos en serie denominados *strings* y *strings* en paralelo conectados a las entradas del inversor.
 
 #### Configuración Eléctrica
 
