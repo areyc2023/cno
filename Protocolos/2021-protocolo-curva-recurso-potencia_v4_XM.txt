@@ -417,7 +417,10 @@ A continuación un ejemplo parcial de la estructura de un archivo de configuraci
   "latitude": 4.604535,
   "longitude": -74.066038,
   "tz": "America/Bogota",
-  ...
+  "altitude": 2632.0,
+  "surface_albedo": 0.18,
+  "inverter_name": "ABB__TRIO_27_6_TL_OUTD_S_US_480__480V_",
+  "ac_model": "sandia",
   "inverter": {
     "Paco": 27600.0,
     "Pdco": 28199.2,
@@ -429,48 +432,24 @@ A continuación un ejemplo parcial de la estructura de un archivo de configuraci
     "C3": -0.001753,
     "Pnt": 8.28
   },
-  "ac_model": "sandia",
-  ...
+  "module_name": "LG_Electronics_Inc__LG400N2W_A5",
   "module": {
-    "A_c": 2.0,
-    "Adjust": 9.380614,
-    "BIPV": false,
-    "Bifacial": false,
-    "Date": "2018-11-04",
-    "I_L_ref": 10.48115,
-    "I_mp_ref": 9.86,
-    "I_o_ref": 1.807477e-11,
-    "I_sc_ref": 10.47,
-    "Length": 2.0,
+    "T_NOCT": 45.0,
+    "Technology": "multisi",
     "N_s": 72,
-    "Name": "LG Electronics Inc. LG400N2W-A5",
-    "PTC": 368.4,
-    "R_s": 0.312859,
-    "R_sh_ref": 293.80542,
-    "STC": 400.316,
-    "T_NOCT": 47.7,
-    "Technology": "Mono-c-Si",
-    "V_mp_ref": 40.6,
-    "V_oc_ref": 49.3,
-    "Version": "SAM 2018.10.29",
-    "Width": 1.0,
-    "a_ref": 1.821208,
-    "alpha_sc": 0.003141,
-    "beta_oc": -0.12818,
-    "created_on": "2019-02-12",
-    "gamma_r": -0.36,
-    "id": 10267,
-    "modified_on": "2019-02-12",
-    "resource_uri": "/api/v1/cecmodule/10267/"
+    "I_sc_ref": 9.51,
+    "V_oc_ref": 46.6,
+    "I_mp_ref": 8.94,
+    "V_mp_ref": 39.2,
+    "alpha_sc": 0.049947,
+    "beta_oc": -0.2897,
+    "gamma_r": -0.37,
+    "STC": 350.0
   },
-  ...
-  "surface_azimuth": [
-    180.0
-  ],
-  "surface_tilt": [
-    10.0
-  ],
-  ...
+  "bifacial": false,
+  "bifaciality": null,
+  "row_height": null,
+  "row_width": null,
   "num_arrays": 1,
   "modules_per_string": [
     18
@@ -478,8 +457,23 @@ A continuación un ejemplo parcial de la estructura de un archivo de configuraci
   "strings_per_inverter": [
     4
   ],
-  ...
-  "name": "SD29"
+  "num_inverter": 1,
+  "with_tracker": false,
+  "surface_tilt": [
+    10.0
+  ],
+  "surface_azimuth": [
+    180.0
+  ],
+  "axis_tilt": null,
+  "axis_azimuth": null,
+  "max_angle": null,
+  "module_type": "glass_glass",
+  "loss": 26.9,
+  "kpc": 0.0,
+  "kt": 0.0,
+  "kin": 0.0,
+  "name": "Ejemplo JSON"
 }
 ```
 

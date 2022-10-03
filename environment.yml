@@ -1,4 +1,4 @@
-name: cnosolar
+name: cno-solar
 channels:
   - conda-forge
   - anaconda
