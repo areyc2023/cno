@@ -330,19 +330,19 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
           
 11. bifacial : bool
 
-    Define si el módulo es bifacial o no.
+    Define si el módulo es bifacial o no, `true` o `false`, respectivamente.
 
 12. bifaciality : float
 
-    Fracción entre la eficiencia del frente y la parte trasera del módulo solar fotovoltaico, medido bajo condiciones STC.
+    Fracción entre la eficiencia del frente y la parte trasera del módulo solar fotovoltaico, medido bajo condiciones STC. Si `bifacial`: `false` se asigna `null`.
 
 13. row_height : float
 
-    Altura de las filas de los módulos solares medido en su centro en m.
+    Altura de las filas de los módulos solares medido en su centro en m. Si `bifacial`: `false` se asigna `null`.  Si `bifacial`: `false` se asigna `null`.
 
 14. row_width : float
 
-    Ancho de las filas de módulos solares en el plano 2D en unidades de metros (por ejemplo, 1P, 2P, 4L).
+    Ancho de las filas de módulos solares en el plano 2D en unidades de metros (por ejemplo, 1P, 2P, 4L).  Si `bifacial`: `false` se asigna `null`.
 
 15. num_arrays : int
 
@@ -362,7 +362,7 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
 
 19. with_tracker : bool
 
-    Parámetro que define si los arreglso están montados en estructuras fijas o con seguimiento a un eje.
+    Parámetro que define si los arreglos están montados en estructuras fijas o con seguimiento a un eje, , `false` o `true`, respectivamente.
 
 20. surface_azimuth : list[float]
 
@@ -383,11 +383,11 @@ La estructura de datos del archivo de configuración JSON contiene los siguiente
 
 24. max_angle : list[float]
 
-        Máximo angulo de rotación del seguidor desde su posición horizontal (por ejemplo, un valor de 90º permite al seguidor girar desde y hasta la posición vertical donde las caras del módulo miran al horizonte) en [grados]. Si `with_tracker = false`, el valor se asigna a `null`.
+    Máximo angulo de rotación del seguidor desde su posición horizontal (por ejemplo, un valor de 90º permite al seguidor girar desde y hasta la posición vertical donde las caras del módulo miran al horizonte) en [grados]. Si `with_tracker = false`, el valor se asigna a `null`.
 
 24. module_type : string
 
-    Método de montaje de los módulos solares y materiales del frente y parte trasera de los mismos. Las opciones válidas son: `open_rack_glass_glass`, `close_mount_glass_glass` o `insulated_back_glass_polymer`.
+    Método de montaje de los módulos solares y materiales del frente y parte trasera de los mismos. Las opciones válidas son: `glass_glass`, `glass_polymer`.
 
 25. loss : float
 

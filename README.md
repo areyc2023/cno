@@ -36,57 +36,39 @@ La descarga de los archivos de producción y de las gráficas (cuaderno `CNO_Pro
 
 Se recomienda instalar [Miniforge](https://github.com/conda-forge/miniforge) como ambiente para instalar Python y las librerías necesarias para la ejecución de los protocolos. Miniforge es una distribución de Python y el administrador de paquetes `conda`, permite fácilmente la configuración de ambientes y la instalación de paquetes desde el repositorio `conda-forge`.
 
+Durante la instalación utilice las opciones recomendadas en las `Advanced Installation Options` como se muestra a continuación.
+
 ![conda-forge/miniforge](images/conda-forge.png)
 
-Luego de descargar e instalar `Miniforge`, inicie el terminal mediante la aplicación `Miniforge Prompt`. Si la instalación se realizó de manera correcta, debe estar en el ambiente `(base)`. 
+Luego de descargar e instalar `Miniforge`, inicie el terminal mediante la aplicación `Miniforge Prompt`. Si la instalación se realizó de manera correcta, debe estar en el ambiente `(base)` como se muestra a continuación. 
 
+![base-env](images/base-env.png)
 
+Se creará un ambiente específico para correr los protocolos el cual llamaremos `cno-solar` y se instalarán los paquetes necesarios. Con este fin abra un terminal con la aplicación `Miniforge Prompt` y desde el ambiente `(base)` muévase al directorio donde tiene descargado los archivos del protocolo, por ejemplo:
 
-Ahora se puede crear un ambiente específico para PVlib y los demás requerimientos de este sofware, dispuestos en el archivo `requirements.txt`. Por ejemplo, si queremos que el ambiente se llame `pvlib`:
-
-```python
-$ conda create --name pvlib
+```terminal
+> cd C:\usuario\Desktop\cno_solar
 ```
 
+Luego cree el ambiente con el comando:
+
+```terminal
+> conda env create --file environment.yml
+```
 Ahora se activa dicho ambiente:
 
-```python
-$ conda activate pvlib
+```terminal
+> conda activate cno-solar
 ```
 
-Después de ejecutar el comando anterior, se debe estar en el ambiente correspondiente, en este caso denotado por `(pvlib)`. Ahora se pueden instalar las librerías requeridas para correr los cuadernos así:
+Después de ejecutar el comando anterior, se debe estar en el ambiente correspondiente, en este caso denotado por `(cno-solar)` como se muestra en la siguiente figura.
 
-```python
-$ conda install package-name
-```
+![cno-solar-env](images/cno-solar-env.png)
 
-Si se desea instalar una versión específica, por ejemplo `pvlib=0.9.0`, el comando es:
+Finalmente se instala el kernel correspondiente al ambiente recien creado.
 
-```python
-$ conda install pvlib==0.9.0
-```
-
-Para instalar las librerías especificadas en el archivo `requirements.txt`, por favor use una de las siguientes opciones:
-
-```python
-$ conda install -c conda-forge --file requirements.txt
-$ pip install -r requirements.txt
-```
-
-#### Widgets
-
-La interfaz gráfica de usuario es realizada con [`ipywidgets`](https://ipywidgets.readthedocs.io/en/latest/). Esta es una librería con *widgets* HTML interactivos para Jupyter Notebook y el kernel de IPython.
-
-En el ambiente activado, ejecute:
-
-```python
-$ conda install -c conda-forge ipywidgets
-```
-
-La mayoría de las veces, la instalación de `ipywidgets` configura automáticamente Jupyter Notebook para utilizar los *widgets*. No obstante, es posible que deba habilitar manualmente la extensión de notebook `ipywidgets` con:
-
-```python
-$ jupyter nbextension enable --py widgetsnbextension
+```terminal
+> python -m ipykernel install --user --name cno-solar --display-name "cno-solar"
 ```
 
 #### Repositorio
