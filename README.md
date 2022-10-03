@@ -34,13 +34,9 @@ La descarga de los archivos de producción y de las gráficas (cuaderno `CNO_Pro
 
 #### Repositorio
 
-Para [clonar](https://docs.github.com/es/repositories/creating-and-managing-repositories/cloning-a-repository) el repositorio `cnosolar` se recomienda usar el software [GitHub Desktop](https://desktop.github.com/). La url del repositorio es: [cno/cno_solar](https://git.cno.org.co/cno/cno_solar).
+Primero es necesario descargar los archivos de los protocolos y los aplicativos para la creación de los archivos de configuración y para correr los modelos. Los archivos se encuentran alojados en el repositorio del Consejo Nacional de Operación en [cno/cno_solar](https://git.cno.org.co/cno/cno_solar). Para [clonar](https://docs.github.com/es/repositories/creating-and-managing-repositories/cloning-a-repository) el repositorio `cnosolar` se recomienda usar el software [GitHub Desktop](https://desktop.github.com/). 
 
-Otra opción es desde el terminal con en el ambiente activado; para esto ejecute:
-
-```bash
-$ git clone https://git.cno.org.co/cno/cno_solar
-```
+Una vez haya descargado e instalado *Github Desktop*, seleccione *File* y *Clone Repository...*. En la pestaña *URL*, en el campo *URL or username/repository* escriba la dirección `https://git.cno.org.co/cno/cno_solar.git`. Seleccione la ubicación donde quiere descargar los archivos y seleccione *Clone*. 
 
 #### Distribución y Ambiente
 
@@ -54,7 +50,7 @@ Luego de descargar e instalar `Miniforge`, inicie el terminal mediante la aplica
 
 ![base-env](images/base-env.png)
 
-Se creará un ambiente específico para correr los protocolos el cual llamaremos `cno-solar` y se instalarán los paquetes necesarios. Con este fin abra un terminal con la aplicación `Miniforge Prompt` y desde el ambiente `(base)` muévase al directorio donde tiene descargado los archivos del protocolo, por ejemplo:
+Se creará un ambiente específico para correr los protocolos el cual llamaremos `cno-solar` y se instalarán los paquetes necesarios. Con este fin abra un terminal con la aplicación `Miniforge Prompt` y desde el ambiente `(base)` muévase al directorio donde tiene descargado los archivos del protocolo, por ejemplo, si los tiene descargados en el escritorio:
 
 ```terminal
 > cd C:\usuario\Desktop\cno_solar
@@ -79,6 +75,12 @@ Finalmente se instala el kernel correspondiente al ambiente recien creado.
 
 ```terminal
 > python -m ipykernel install --user --name cno-solar --display-name "cno-solar"
+```
+
+Finalmente ejecute el siguiente comando para iniciar los cuadernos. 
+
+```terminal
+> jupyter notebook
 ```
 
 ## Licencia
