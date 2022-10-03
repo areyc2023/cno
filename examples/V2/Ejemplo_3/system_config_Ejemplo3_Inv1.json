@@ -4,14 +4,16 @@
   "tz": "America/Bogota",
   "altitude": 2632.0,
   "surface_albedo": 0.18,
+  "inverter_name": "Fabricante Referencia E3 Inv1",
+  "ac_model": "pvwatts",
   "inverter": {
     "Pdco": 28199.2,
     "eta_inv_nom": 0.98
   },
-  "ac_model": "pvwatts",
+  "module_name": "Fabricante Referencia E3",
   "module": {
     "T_NOCT": 44.0,
-    "Technology": "multisi",
+    "Technology": "monosi",
     "N_s": 72.0,
     "I_sc_ref": 11.35,
     "V_oc_ref": 48.6,

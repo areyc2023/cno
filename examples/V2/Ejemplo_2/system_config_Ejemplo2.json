@@ -4,14 +4,16 @@
   "tz": "America/Bogota",
   "altitude": 2632.0,
   "surface_albedo": 0.18,
+  "inverter_name": "Ingeteam INGECON SUN 1690TL B650 OUTDOOR",
+  "ac_model": "pvwatts",
   "inverter": {
     "Pdco": 1723000.0,
-    "eta_inv_nom": 95.0
+    "eta_inv_nom": 0.95
   },
-  "ac_model": "pvwatts",
+  "module_name": "Canadian Solar Inc. CS3U-350P 1500V HE",
   "module": {
     "T_NOCT": 45.0,
-    "Technology": "polisi",
+    "Technology": "multisi",
     "N_s": 72,
     "I_sc_ref": 9.51,
     "V_oc_ref": 46.6,
@@ -23,9 +25,9 @@
     "STC": 350.0
   },
   "bifacial": false,
-  "bifaciality": 0.0,
-  "row_height": 0.0,
-  "row_width": 0.0,
+  "bifaciality": null,
+  "row_height": null,
+  "row_width": null,
   "num_arrays": 2,
   "modules_per_string": [
     38,

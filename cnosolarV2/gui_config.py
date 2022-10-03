@@ -9,6 +9,7 @@ import requests
 import traitlets
 import numpy as np
 import pandas as pd
+import cnosolarV2 as cno
 import ipywidgets as widgets
 from tkinter import Tk, filedialog
 from IPython.display import display
@@ -198,9 +199,11 @@ def execute():
     ###############################
     #      DOCUMENTATION TAB      #
     ###############################
-    gui_layout = widgets.Layout(display='flex',
+    GUI_LAYOUT = widgets.Layout(display='flex',
                                 flex_flow='row',
                                 justify_content='space-between')
+    
+    STYLE = {'description_width': 'initial'}
     
     doc_location = widgets.HTML('''
                                 <h5>Información Geográfica</h5>
@@ -360,7 +363,7 @@ def execute():
     ac_documentation.set_title(3, 'Tab Diseño Planta')
 
     tab_doc = widgets.Box([widgets.HTML('<h4>Documentación</h4>', layout=widgets.Layout(height='auto')), 
-                           widgets.VBox([widgets.Box([ac_documentation], layout=gui_layout)])], 
+                           widgets.VBox([widgets.Box([ac_documentation], layout=GUI_LAYOUT)])], 
                            layout=widgets.Layout(display='flex',
                                                  flex_flow='column',
                                                  border='solid 0px',
@@ -386,37 +389,33 @@ def execute():
                 'Acero Sucio': 'dirty steel',
                 'Mar': 'sea'}
 
-    gui_layout = widgets.Layout(display='flex',
-                                flex_flow='row',
-                                justify_content='space-between')
-
     w_latitude = widgets.FloatText(value=0,
                                    step=0.00001,
                                    description='',
                                    disabled=False,
-                                   style={'description_width': 'initial'})
+                                   style=STYLE)
 
     w_longitude = widgets.FloatText(value=0,
                                     step=0.00001,
                                     description='',
                                     disabled=False,
-                                    style={'description_width': 'initial'})
+                                    style=STYLE)
 
     w_altitude = widgets.FloatText(value=0,
                                    step=1,
                                    description='',
                                    disabled=False,
-                                   style={'description_width': 'initial'})
+                                   style=STYLE)
 
     w_timezone = widgets.Dropdown(options=pytz.all_timezones,
                                   value='America/Bogota',
                                   description='',
-                                  style={'description_width': 'initial'})
+                                  style=STYLE)
 
     w_surface = widgets.Dropdown(options=surfaces,
                                  value=None,
                                  description='',
-                                 style={'description_width': 'initial'})
+                                 style=STYLE)
 
     w_albedo = widgets.BoundedFloatText(value=None,
                                         step=0.01,
@@ -424,7 +423,7 @@ def execute():
                                         max=1,
                                         description='',
                                         disabled=False,
-                                        style={'description_width': 'initial'})
+                                        style=STYLE)
     
     def handle_surface_change(change):
         if change.new != None:
@@ -433,12 +432,12 @@ def execute():
     w_surface.observe(handle_surface_change, names='value')
 
     widget_location = [widgets.Box([widgets.HTML('<h4>Información Geográfica</h4>', layout=widgets.Layout(height='auto'))]),
-                       widgets.Box([widgets.Label('Latitud'), w_latitude], layout=gui_layout),
-                       widgets.Box([widgets.Label('Longitud'), w_longitude], layout=gui_layout),
-                       widgets.Box([widgets.Label('Altitud [m.s.n.m]'), w_altitude], layout=gui_layout),
-                       widgets.Box([widgets.Label('Huso Horario'), w_timezone], layout=gui_layout),
-                       widgets.Box([widgets.Label('Superficie'), w_surface], layout=gui_layout),
-                       widgets.Box([widgets.Label('Albedo [%]'), w_albedo], layout=gui_layout)]
+                       widgets.Box([widgets.Label('Latitud'), w_latitude], layout=GUI_LAYOUT),
+                       widgets.Box([widgets.Label('Longitud'), w_longitude], layout=GUI_LAYOUT),
+                       widgets.Box([widgets.Label('Altitud [m.s.n.m]'), w_altitude], layout=GUI_LAYOUT),
+                       widgets.Box([widgets.Label('Huso Horario'), w_timezone], layout=GUI_LAYOUT),
+                       widgets.Box([widgets.Label('Superficie'), w_surface], layout=GUI_LAYOUT),
+                       widgets.Box([widgets.Label('Albedo [ad.]'), w_albedo], layout=GUI_LAYOUT)]
 
     tab_location = widgets.Box(widget_location, layout=widgets.Layout(display='flex',
                                                                       flex_flow='column',
@@ -449,12 +448,7 @@ def execute():
     ###############################
     #        INVERTER TAB         #
     ###############################
-    inv_repo = {'': None,
-                'CEC': 'CECInverter'}
-
-    gui_layout = widgets.Layout(display='flex',
-                                flex_flow='row',
-                                justify_content='space-between')
+    inv_repo = {'CEC': 'CECInverter'}
 
     inverter_btn = widgets.ToggleButtons(value=None,
                                          options=['Repositorio', 'PVsyst', 'Manual'],
@@ -472,16 +466,16 @@ def execute():
     dropdown_invrepo = widgets.Dropdown(options=inv_repo,
                                         value=None,
                                         description='',
-                                        style={'description_width': 'initial'})
+                                        style=STYLE)
 
     dropdown_manufac = widgets.Dropdown(options='',
                                         value=None,
                                         disabled=True,
                                         description='',
-                                        style={'description_width': 'initial'})
+                                        style=STYLE)
 
-    w_dropinvrepo = widgets.VBox([widgets.Box([widgets.Label('Repositorio'), dropdown_invrepo], layout=gui_layout)])
-    w_dropmanufac = widgets.VBox([widgets.Box([widgets.Label('Fabricantes'), dropdown_manufac], layout=gui_layout)])
+    w_dropinvrepo = widgets.VBox([widgets.Box([widgets.Label('Repositorio'), dropdown_invrepo], layout=GUI_LAYOUT)])
+    w_dropmanufac = widgets.VBox([widgets.Box([widgets.Label('Fabricantes'), dropdown_manufac], layout=GUI_LAYOUT)])
     
     # PVsyst Widgets
     class SelectFilesButton(widgets.Button):
@@ -515,7 +509,7 @@ def execute():
             # List of selected fileswill be set to b.value
             b.files = filedialog.askopenfilename(filetypes=(('OND Files', '.OND'),), 
                                                  multiple=False,
-                                                 title='Select OND Data File')
+                                                 title='Select OND File')
 
             b.description = 'Seleccionado'
             b.icon = 'check-square-o'
@@ -533,14 +527,14 @@ def execute():
     btn.add_traits(files=traitlets.traitlets.Dict())
 
     w_upload = widgets.VBox([widgets.Box([widgets.HTML('<h5> </h5>', layout=widgets.Layout(height='auto'))]), 
-                             widgets.Box([widgets.Label('Archivo Inversor (.OND)'), upload_btn, btn], layout=gui_layout)])
+                             widgets.Box([widgets.Label('Archivo Inversor (.OND)'), upload_btn, btn], layout=GUI_LAYOUT)])
 
     # Manual Widgets
     dropdown_manual = widgets.Dropdown(options=['', 'Sandia', 'PVWatts'],
                                        value=None,
                                        description='')
     
-    w_dropmanual = widgets.VBox([widgets.Box([widgets.Label('Formato de Configuración'), dropdown_manual], layout=gui_layout)])
+    w_dropmanual = widgets.VBox([widgets.Box([widgets.Label('Formato de Configuración'), dropdown_manual], layout=GUI_LAYOUT)])
 
     def handle_toggle(change):
         if change['new'] == 'Repositorio':
@@ -576,9 +570,9 @@ def execute():
         inv_drop = widgets.Dropdown(options=inv_options,
                                     value=None,
                                     description='',
-                                    style={'description_width': 'initial'})
+                                    style=STYLE)
         
-        w_dropinv = widgets.VBox([widgets.Box([widgets.Label('Inversores'), inv_drop], layout=gui_layout)])
+        w_dropinv = widgets.VBox([widgets.Box([widgets.Label('Inversores'), inv_drop], layout=GUI_LAYOUT)])
 
         inverter_vbox.children = [inverter_btn, w_dropinvrepo, w_dropmanufac, w_dropinv]
 
@@ -596,11 +590,11 @@ def execute():
                         'pdc0': float(ond['pvGInverter']['TConverter']['PNomDC'])*1000,
                         'Vdco': float(ond['pvGInverter']['TConverter']['VNomEff'].split(',')[1]), # Voltaje medio
                         'Pnt': float(ond['pvGInverter']['Night_Loss']), # Night Loss
-                        'Vdcmax': float(ond['pvGInverter']['TConverter']['VAbsMax']), # Alto voltaje -- Voltaje de entrada (Curva de eficiencia)
+                        'Vdcmax': float(ond['pvGInverter']['TConverter']['VAbsMax']), # Alto voltaje (Ventrada en curva efic)
                         'Idcmax': float(ond['pvGInverter']['TConverter']['IMaxDC']),
                         'Mppt_low': float(ond['pvGInverter']['TConverter']['VMppMin']), # Vmín@Pnom
                         'Mppt_high': float(ond['pvGInverter']['TConverter']['VMPPMax']), # Alto Voltaje
-                        'eta_inv_nom': float(ond['pvGInverter']['TConverter']['EfficEuro']),
+                        'eta_inv_nom': float(ond['pvGInverter']['TConverter']['EfficEuro'])/100,
                         'eta_inv_ref': 0.9637,
                         'Name': '{} {}'.format(ond['pvGInverter']['pvCommercial']['Manufacturer'], ond['pvGInverter']['pvCommercial']['Model'])}
             btn.files = {'inv': inverter}
@@ -608,40 +602,40 @@ def execute():
     # MANUAL
     def handle_dropdown_manual(change):    
         if change['new'] == 'Sandia':
-            w_Paco = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_Pdco = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_Vdco = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_Pso = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_C0 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_C1 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_C2 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_C3 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_Pnt = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style={'description_width': 'initial'})
+            w_Paco = widgets.FloatText(value=None, description='', style=STYLE)
+            w_Pdco = widgets.FloatText(value=None, description='', style=STYLE)
+            w_Vdco = widgets.FloatText(value=None, description='', style=STYLE)
+            w_Pso = widgets.FloatText(value=None, description='', style=STYLE)
+            w_C0 = widgets.FloatText(value=None, description='', style=STYLE)
+            w_C1 = widgets.FloatText(value=None, description='', style=STYLE)
+            w_C2 = widgets.FloatText(value=None, description='', style=STYLE)
+            w_C3 = widgets.FloatText(value=None, description='', style=STYLE)
+            w_Pnt = widgets.FloatText(value=None, description='', style=STYLE)
+            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
 
             inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Sandia</h5>', layout=widgets.Layout(height='auto'))]),
-                                     widgets.Box([widgets.Label('$P_{AC}$ Nominal  [W]'), w_Paco], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_Pdco], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$V_{DC}$ Nominal [V]'), w_Vdco], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$P_{DC}$ de Arraque [W]'), w_Pso], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$C_0$ [1/W]'), w_C0], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$C_1$ [1/V]'), w_C1], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$C_2$ [1/V]'), w_C2], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$C_3$ [1/V]'), w_C3], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$P_{AC}$ Consumo Nocturno [W]'), w_Pnt], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Referencia Inversor'), w_Name], layout=gui_layout)])
+                                     widgets.Box([widgets.Label('$P_{AC}$ Nominal  [W]'), w_Paco], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_Pdco], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$V_{DC}$ Nominal [V]'), w_Vdco], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$P_{DC}$ de Arraque [W]'), w_Pso], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$C_0$ [1/W]'), w_C0], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$C_1$ [1/V]'), w_C1], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$C_2$ [1/V]'), w_C2], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$C_3$ [1/V]'), w_C3], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$P_{AC}$ Consumo Nocturno [W]'), w_Pnt], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Referencia Inversor'), w_Name], layout=GUI_LAYOUT)])
 
             inverter_vbox.children = [inverter_btn, w_dropmanual, inv_conf]
 
         else:
-            w_pdc0 = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_eta_inv_nom = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.01, description='', style={'description_width': 'initial'})
-            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style={'description_width': 'initial'})
+            w_pdc0 = widgets.FloatText(value=None, description='', style=STYLE)
+            w_eta_inv_nom = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.01, description='', style=STYLE)
+            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
 
             inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración PVWatts</h5>', layout=widgets.Layout(height='auto'))]),
-                                     widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_pdc0], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Eficiencia Nominal [ad.]'), w_eta_inv_nom], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Referencia Inversor'), w_Name], layout=gui_layout)])
+                                     widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_pdc0], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Eficiencia Nominal [ad.]'), w_eta_inv_nom], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Referencia Inversor'), w_Name], layout=GUI_LAYOUT)])
 
             inverter_vbox.children = [inverter_btn, w_dropmanual, inv_conf]
 
@@ -668,15 +662,11 @@ def execute():
                 'PVFree': 'PVFree',
                 'CEC': 'CECMod'}
 
-    gui_layout = widgets.Layout(display='flex',
-                                flex_flow='row',
-                                justify_content='space-between')
-
     module_btn = widgets.ToggleButtons(value=None,
                                        options=['Repositorio', 'PVsyst', 'Manual'],
                                        description='',
                                        disabled=False,
-                                       button_style='', # 'success', 'info', 'warning', 'danger' or ''
+                                       button_style='',
                                        tooltips=['Base de datos de PVlib', 
                                                  'Importar desde archivo de PVsyst', 
                                                  'Configuración manual'])
@@ -688,16 +678,16 @@ def execute():
     dropdown_modrepo = widgets.Dropdown(options=mod_repo,
                                         value=None,
                                         description='',
-                                        style={'description_width': 'initial'})
+                                        style=STYLE)
 
     dropdown_modmanu = widgets.Dropdown(options='',
                                         value=None,
                                         disabled=True,
                                         description='',
-                                        style={'description_width': 'initial'})
+                                        style=STYLE)
 
-    w_dropmodrepo = widgets.VBox([widgets.Box([widgets.Label('Repositorio'), dropdown_modrepo], layout=gui_layout)])
-    w_dropmodmanu = widgets.VBox([widgets.Box([widgets.Label('Fabricantes'), dropdown_modmanu], layout=gui_layout)])
+    w_dropmodrepo = widgets.VBox([widgets.Box([widgets.Label('Repositorio'), dropdown_modrepo], layout=GUI_LAYOUT)])
+    w_dropmodmanu = widgets.VBox([widgets.Box([widgets.Label('Fabricantes'), dropdown_modmanu], layout=GUI_LAYOUT)])
     
     # PVsyst Widgets
     class SelectPANButton(widgets.Button):
@@ -731,7 +721,7 @@ def execute():
             # List of selected fileswill be set to b.value
             b.files = filedialog.askopenfilename(filetypes=(('PAN Files', '.PAN'),), 
                                                  multiple=False,
-                                                 title='Select PAN Data File')
+                                                 title='Select PAN File')
 
             b.description = 'Seleccionado'
             b.icon = 'check-square-o'
@@ -750,21 +740,21 @@ def execute():
     modbtn_output = widgets.Output()
 
     w_modupload = widgets.VBox([widgets.Box([widgets.HTML('<h5> </h5>', layout=widgets.Layout(height='auto'))]), 
-                                widgets.Box([widgets.Label('Archivo Módulo (.PAN)'), upload_modbtn, modbtn], layout=gui_layout)])
+                                widgets.Box([widgets.Label('Archivo Módulo (.PAN)'), upload_modbtn, modbtn], layout=GUI_LAYOUT)])
 
     # Manual Widgets
-    dropdown_modmanual = widgets.Dropdown(options=['', 'SNL PVlib', 'NREL PVWatts'],
+    dropdown_modmanual = widgets.Dropdown(options=['', 'Sandia', 'PVWatts'],
                                           value=None,
                                           description='Método',
-                                          style={'description_width': 'initial'})
+                                          style=STYLE)
 
     # BIFACIAL PARAMETERS
     dropdown_bifacial = widgets.Dropdown(options=[('Sí', True), ('No', False)],
                                           value=False,
                                           description='',
-                                          style={'description_width': 'initial'})
+                                          style=STYLE)
 
-    w_dropbrifacial = widgets.VBox([widgets.Box([widgets.Label('Panel Bifacial'), dropdown_bifacial], layout=gui_layout)])
+    w_dropbrifacial = widgets.VBox([widgets.Box([widgets.Label('Panel Bifacial'), dropdown_bifacial], layout=GUI_LAYOUT)])
     bifacial_vbox = widgets.VBox([w_dropbrifacial])
     
     def handle_modtoggle(change):
@@ -775,32 +765,32 @@ def execute():
             module_vbox.children = [module_btn, w_modupload]
 
         elif change['new'] == 'Manual':  
-            w_T_NOCT = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_Type = widgets.Dropdown(options=[('Mono-Si', 'monosi'), ('Multi-Si', 'multisi'), ('Poli-Si', 'polysi'), ('CIS', 'cis'), ('CIGS', 'cigs'), ('CdTe', 'cdte'), ('Amorfo', 'amorphous')], value=None, description='', style={'description_width': 'initial'})
-            w_N_s = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_I_sc_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_V_oc_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_I_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_V_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_alpha_sc = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_beta_oc = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_gamma_r = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_STC = widgets.FloatText(value=None, step=0.1, description='', style={'description_width': 'initial'})
-            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style={'description_width': 'initial'})
+            w_T_NOCT = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_Type = widgets.Dropdown(options=[('Mono-Si', 'monosi'), ('Multi-Si', 'multisi'), ('Poli-Si', 'polysi'), ('CIS', 'cis'), ('CIGS', 'cigs'), ('CdTe', 'cdte'), ('Amorfo', 'amorphous')], value='monosi', description='', style=STYLE)
+            w_N_s = widgets.FloatText(value=None, description='', style=STYLE)
+            w_I_sc_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_V_oc_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_I_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_V_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_alpha_sc = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_beta_oc = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_gamma_r = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_STC = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
 
             mod_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Módulo</h5>', layout=widgets.Layout(height='auto'))]),
-                                     widgets.Box([widgets.Label('$T_{NOCT}$ [ºC]'), w_T_NOCT], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Tecnología'), w_Type], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Número Celdas'), w_N_s], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$I_{SC}$ en STC [A]'), w_I_sc_ref], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$V_{OC}$ en STC [V]'), w_V_oc_ref], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$I_{MP}$ en STC [A]'), w_I_mp_ref], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$V_{MP}$ en STC [A]'), w_V_mp_ref], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Coef. Temp. $I_{SC}$ [%/ºC]'), w_alpha_sc], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Coef. Temp. $V_{OC}$ [%/ºC]'), w_beta_oc], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Coef. Temp. $P_{MP}$ [%/ºC]'), w_gamma_r], layout=gui_layout),
-                                     widgets.Box([widgets.Label('$P_{Nominal}$ en STC [W]'), w_STC], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Referencia Módulo'), w_Name], layout=gui_layout)])
+                                     widgets.Box([widgets.Label('$T_{NOCT}$ [ºC]'), w_T_NOCT], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Tecnología'), w_Type], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Número Celdas'), w_N_s], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$I_{SC}$ en STC [A]'), w_I_sc_ref], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$V_{OC}$ en STC [V]'), w_V_oc_ref], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$I_{MP}$ en STC [A]'), w_I_mp_ref], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$V_{MP}$ en STC [A]'), w_V_mp_ref], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Coef. Temp. $I_{SC}$ [%/ºC]'), w_alpha_sc], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Coef. Temp. $V_{OC}$ [%/ºC]'), w_beta_oc], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Coef. Temp. $P_{MP}$ [%/ºC]'), w_gamma_r], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$P_{Nominal}$ en STC [W]'), w_STC], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Referencia Módulo'), w_Name], layout=GUI_LAYOUT)])
 
             module_vbox.children = [module_btn, mod_conf]
 
@@ -809,12 +799,12 @@ def execute():
             dropdown_pvfree = widgets.Dropdown(options=['', 'cecmodule', 'pvmodule'],
                                            value=None,
                                            description='',
-                                           style={'description_width': 'initial'})
+                                           style=STYLE)
 
-            pvfree_id = widgets.VBox([widgets.IntText(value=None, description='', style={'description_width': 'initial'})])     
+            pvfree_id = widgets.VBox([widgets.IntText(value=None, description='', style=STYLE)])     
 
-            w_droppvfree = widgets.VBox([widgets.Box([widgets.Label('Base de Datos'), dropdown_pvfree], layout=gui_layout)])
-            w_modconf = widgets.VBox([widgets.Box([widgets.Label('ID'), pvfree_id], layout=gui_layout)])
+            w_droppvfree = widgets.VBox([widgets.Box([widgets.Label('Base de Datos'), dropdown_pvfree], layout=GUI_LAYOUT)])
+            w_modconf = widgets.VBox([widgets.Box([widgets.Label('ID'), pvfree_id], layout=GUI_LAYOUT)])
             
             module_vbox.children = [module_btn, w_dropmodrepo, w_droppvfree, w_modconf]
 
@@ -843,9 +833,9 @@ def execute():
         mod_drop = widgets.Dropdown(options=mod_options,
                                     value=None,
                                     description='',
-                                    style={'description_width': 'initial'})
+                                    style=STYLE)
 
-        w_dropmod = widgets.VBox([widgets.Box([widgets.Label('Módulos'), mod_drop], layout=gui_layout)])
+        w_dropmod = widgets.VBox([widgets.Box([widgets.Label('Módulos'), mod_drop], layout=GUI_LAYOUT)])
         
         module_vbox.children = [module_btn, w_dropmodrepo, w_dropmodmanu, w_dropmod]
 
@@ -869,13 +859,13 @@ def execute():
     # BIFACIAL 
     def handle_dropdown_bifacial(change):
         if change['new'] == True:
-            w_bifaciality = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.1, description='', style={'description_width': 'initial'})
-            w_rowheight = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
-            w_rowwidth = widgets.FloatText(value=None, description='', style={'description_width': 'initial'})
+            w_bifaciality = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.1, description='', style=STYLE)
+            w_rowheight = widgets.BoundedFloatText(value=None, min=0, max=1000, step=0.1, description='', style=STYLE)
+            w_rowwidth = widgets.BoundedFloatText(value=None, min=0, max=1000, step=0.1, description='', style=STYLE)
 
-            bif_conf = widgets.VBox([widgets.Box([widgets.Label('Bifacialidad [%]'), w_bifaciality], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Alto Fila Paneles [m]'), w_rowheight], layout=gui_layout),
-                                     widgets.Box([widgets.Label('Ancho Fila Paneles [m]'), w_rowwidth], layout=gui_layout)])
+            bif_conf = widgets.VBox([widgets.Box([widgets.Label('Bifacialidad [ad.]'), w_bifaciality], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Alto Fila Paneles [m]'), w_rowheight], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('Ancho Fila Paneles [m]'), w_rowwidth], layout=GUI_LAYOUT)])
 
             bifacial_vbox.children = [w_dropbrifacial, bif_conf]
 
@@ -905,15 +895,15 @@ def execute():
     ###############################
 
     # SUBARRAYS
-    w_subarrays = widgets.BoundedIntText(value=0, min=0, max=1000, description='', style={'description_width': 'initial'})
+    w_subarrays = widgets.BoundedIntText(value=1, min=1, max=1000, description='', style=STYLE)
 
     conf_subarrays = widgets.VBox([widgets.Box([widgets.HTML('<h4>Subarrays</h4>', layout=widgets.Layout(height='auto'))]),
-                                   widgets.Box([widgets.Label('Cantidad Subarrays'), w_subarrays], layout=gui_layout)])
+                                   widgets.Box([widgets.Label('Cantidad Subarrays'), w_subarrays], layout=GUI_LAYOUT)])
 
     # ELECTRICAL CONFIGURATION
-    w_mps = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-    w_spi = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-    w_numinv = widgets.IntText(value=1, description='', style={'description_width': 'initial'})
+    w_mps = widgets.Text(value='0', description='', style=STYLE)
+    w_spi = widgets.Text(value='0', description='', style=STYLE)
+    w_numinv = widgets.IntText(value=1, description='', style=STYLE)
 
     def handle_mppt(change):
         if change['new'] == 1:
@@ -931,9 +921,9 @@ def execute():
     w_subarrays.observe(handle_mppt, 'value')
 
     conf_elec = widgets.VBox([widgets.Box([widgets.HTML('<h4>Configuración Eléctrica</h4>', layout=widgets.Layout(height='auto'))]),
-                              widgets.Box([widgets.Label('Módulos por String'), w_mps], layout=gui_layout),
-                              widgets.Box([widgets.Label('Strings por Inversor'), w_spi], layout=gui_layout),
-                              widgets.Box([widgets.Label('Número Inversores'), w_numinv], layout=gui_layout)])
+                              widgets.Box([widgets.Label('Módulos por String'), w_mps], layout=GUI_LAYOUT),
+                              widgets.Box([widgets.Label('Strings por Inversor'), w_spi], layout=GUI_LAYOUT),
+                              widgets.Box([widgets.Label('Número Inversores'), w_numinv], layout=GUI_LAYOUT)])
 
     # TRACKING AND ORIENTATION CONFIGURATION
     header_TO = widgets.HTML("<h4>Seguidores y Orientación</h4>", layout=widgets.Layout(height='auto'))
@@ -950,9 +940,9 @@ def execute():
 
     def handle_toggle(change):
         if change['new'] == 'Sin Seguidor':
-            w_Azimuth = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-            w_Tilt = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-            w_Racking = widgets.Dropdown(options=['open_rack', 'close_mount', 'insulated_back'], value='open_rack', description='', style={'description_width': 'initial'})
+            w_Azimuth = widgets.Text(value=None, description='', style=STYLE)
+            w_Tilt = widgets.Text(value=None, description='', style=STYLE)
+            w_Racking = widgets.Dropdown(options=[('Open Rack', 'open_rack'), ('Close Mount', 'close_mount'), ('Insulated Back', 'insulated_back')], value='open_rack', description='', style=STYLE) # https://sam.nrel.gov/forum/forum-general/1040-mount-types.html#3148
 
             if w_subarrays.value == 1:
                 v_angles = '0.0'
@@ -963,17 +953,17 @@ def execute():
             w_Azimuth.value = v_angles
             w_Tilt.value = v_angles
             
-            no_tracker = widgets.VBox([widgets.Box([widgets.Label('Elevación [º]'), w_Tilt], layout=gui_layout),
-                                       widgets.Box([widgets.Label('Azimutal [º]'), w_Azimuth], layout=gui_layout),
-                                       widgets.Box([widgets.Label('Racking'), w_Racking], layout=gui_layout)])
+            no_tracker = widgets.VBox([widgets.Box([widgets.Label('Elevación [º]'), w_Tilt], layout=GUI_LAYOUT),
+                                       widgets.Box([widgets.Label('Azimutal [º]'), w_Azimuth], layout=GUI_LAYOUT),
+                                       widgets.Box([widgets.Label('Racking'), w_Racking], layout=GUI_LAYOUT)])
 
             sysconfig_vbox.children = [header_TO, tracker_btn, no_tracker]
 
         elif change['new'] == 'Seguidor 1-Eje':
-            w_AxisTilt = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-            w_AxisAzimuth = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-            w_MaxAngle = widgets.Text(value=None, description='', style={'description_width': 'initial'})
-            w_Racking = widgets.Dropdown(options=['open_rack', 'close_mount', 'insulated_back'], value='open_rack', description='', style={'description_width': 'initial'})
+            w_AxisTilt = widgets.Text(value=None, description='', style=STYLE)
+            w_AxisAzimuth = widgets.Text(value=None, description='', style=STYLE)
+            w_MaxAngle = widgets.Text(value=None, description='', style=STYLE)
+            w_Racking = widgets.Dropdown(options=[('Open Rack', 'open_rack'), ('Close Mount', 'close_mount'), ('Insulated Back', 'insulated_back')], value='open_rack', description='', style=STYLE) # https://sam.nrel.gov/forum/forum-general/1040-mount-types.html#3148
 
             if w_subarrays.value == 1:
                 v_angles = '0.0'
@@ -985,30 +975,30 @@ def execute():
             w_AxisAzimuth.value = v_angles
             w_MaxAngle.value = v_angles
             
-            single_tracker = widgets.VBox([widgets.Box([widgets.Label('Elevación Eje [º]'), w_AxisTilt], layout=gui_layout),
-                                           widgets.Box([widgets.Label('Azimutal Eje [º]'), w_AxisAzimuth], layout=gui_layout),
-                                           widgets.Box([widgets.Label('Ángulo Máximo [º]'), w_MaxAngle], layout=gui_layout),
-                                           widgets.Box([widgets.Label('Racking'), w_Racking], layout=gui_layout)])
+            single_tracker = widgets.VBox([widgets.Box([widgets.Label('Elevación Eje [º]'), w_AxisTilt], layout=GUI_LAYOUT),
+                                           widgets.Box([widgets.Label('Azimutal Eje [º]'), w_AxisAzimuth], layout=GUI_LAYOUT),
+                                           widgets.Box([widgets.Label('Ángulo Máximo [º]'), w_MaxAngle], layout=GUI_LAYOUT),
+                                           widgets.Box([widgets.Label('Racking'), w_Racking], layout=GUI_LAYOUT)])
 
             sysconfig_vbox.children = [header_TO, tracker_btn, single_tracker]
 
     tracker_btn.observe(handle_toggle, 'value')
 
     # GLOBAL PARAMETERS
-    w_loss = widgets.BoundedFloatText(value=14.6, min=0, max=100, step=0.1, description='', style={'description_width': 'initial'})
-    w_name = widgets.Text(value='', placeholder='Sufijo extensión .JSON', description='', style={'description_width': 'initial'})
-    kpc_loss = widgets.BoundedFloatText(value=0.0, min=0, max=100, step=0.1, description='', style={'description_width': 'initial'})
-    kt_loss = widgets.BoundedFloatText(value=0.0, min=0, max=100, step=0.1, description='', style={'description_width': 'initial'})
-    kin_loss = widgets.BoundedFloatText(value=0.0, min=0, max=100, step=0.1, description='', style={'description_width': 'initial'})
+    w_loss = widgets.BoundedFloatText(value=14.6, min=0, max=100, step=0.1, description='', style=STYLE)
+    w_name = widgets.Text(value='', placeholder='Sufijo extensión .JSON', description='', style=STYLE)
+    kpc_loss = widgets.BoundedFloatText(value=0.0, min=0, max=100, step=0.1, description='', style=STYLE)
+    kt_loss = widgets.BoundedFloatText(value=0.0, min=0, max=100, step=0.1, description='', style=STYLE)
+    kin_loss = widgets.BoundedFloatText(value=0.0, min=0, max=100, step=0.1, description='', style=STYLE)
     
     conf_globalparams = widgets.VBox([widgets.Box([widgets.HTML('<h4>Parámetros Globales</h4>', layout=widgets.Layout(height='auto'))]),
-                                      widgets.Box([widgets.Label('Pérdidas DC [%]'), w_loss], layout=gui_layout),
+                                      widgets.Box([widgets.Label('Pérdidas DC [%]'), w_loss], layout=GUI_LAYOUT),
                                       widgets.Box([widgets.HTML('<h4> </h4>', layout=widgets.Layout(height='auto'))]),
-                                      widgets.Box([widgets.Label('$k_{pc}$ [%]'), kpc_loss], layout=gui_layout),
-                                      widgets.Box([widgets.Label('$k_{t}$ [%]'), kt_loss], layout=gui_layout),
-                                      widgets.Box([widgets.Label('$k_{in}$ [%]'), kin_loss], layout=gui_layout),
+                                      widgets.Box([widgets.Label('$k_{pc}$ [%]'), kpc_loss], layout=GUI_LAYOUT),
+                                      widgets.Box([widgets.Label('$k_{t}$ [%]'), kt_loss], layout=GUI_LAYOUT),
+                                      widgets.Box([widgets.Label('$k_{in}$ [%]'), kin_loss], layout=GUI_LAYOUT),
                                       widgets.Box([widgets.HTML('<h4> </h4>', layout=widgets.Layout(height='auto'))]),
-                                      widgets.Box([widgets.Label('Nombre Planta'), w_name], layout=gui_layout)])
+                                      widgets.Box([widgets.Label('Nombre Planta'), w_name], layout=GUI_LAYOUT)])
 
     # CONFIGURATION FILE
     # Config Button
@@ -1022,6 +1012,17 @@ def execute():
 
     genconfig_output = widgets.Output()
 
+    # Download Button
+    download_btn = widgets.Button(value=False,
+                                  description='Descargar Configuración',
+                                  disabled=True,
+                                  button_style='',
+                                  tooltip='Descarga JSON de la Configuración del Sistema',
+                                  icon='download',
+                                  layout=widgets.Layout(width='60%', height='auto'))
+    
+    output = widgets.Output()
+    
     def on_genconfig_clicked(obj):    
         with genconfig_output:
             genconfig_output.clear_output()
@@ -1033,20 +1034,20 @@ def execute():
 
             system_configuration = sys_config(inverter_status, module_status, mount_status, econfig_status)
 
-            genconfig_btn.description = 'Configuración Generada'
-            genconfig_btn.icon = 'check'
+            # JSON verification
+            checking_tag = cno.verification.check_json(json_to_check=system_configuration)
 
+            if checking_tag == 'fail':
+                genconfig_btn.description = 'Revisar Configuración'
+                genconfig_btn.icon = 'warning'
+            
+            elif checking_tag == 'success':
+                genconfig_btn.description = 'Configuración Generada'
+                genconfig_btn.icon = 'check'
+
+                download_btn.disabled = False
+                
     genconfig_btn.on_click(on_genconfig_clicked)
-
-    # Download Button
-    download_btn = widgets.Button(value=False,
-                                  description='Descargar Configuración',
-                                  disabled=False,
-                                  button_style='',
-                                  tooltip='Descarga JSON de la Configuración del Sistema',
-                                  icon='download',
-                                  layout=widgets.Layout(width='60%', height='auto'))
-    output = widgets.Output()
 
     def on_button_clicked(obj):
         with output:
@@ -1145,6 +1146,9 @@ def execute():
                             'Pnt': inverter_vbox.children[2].children[9].children[1].value}
                 
                 inverter_name = inverter_vbox.children[2].children[10].children[1].value
+                
+                if inverter_name == '':
+                    inverter_name = None
 
             elif dropdown_manual.value == 'PVWatts':
                 ac_model = 'pvwatts'
@@ -1154,6 +1158,9 @@ def execute():
                 
                 inverter_name = inverter_vbox.children[2].children[3].children[1].value
 
+                if inverter_name == '':
+                    inverter_name = None
+                
             else:
                 inverter_name = None
                 
@@ -1267,21 +1274,20 @@ def execute():
             modules_database = None
             modules_name = module_vbox.children[1].children[12].children[1].value
         
+            if modules_name == '':
+                modules_name = None
+        
         t = module['Technology']
         if t in ['Mono-c-Si', 'monoSi', 'monosi', 'c-Si', 'xsi', 'mtSiMono']:
             module_tec = 'monosi'
-        elif t in ['Multi-c-Si', 'multiSi',  'multisi', 'mc-Si', 'EFG mc-Si']:
+        elif t in ['Multi-c-Si', 'multiSi',  'multisi', 'mc-Si', 'EFG mc-Si', 'polySi',  'polysi', 'mtSiPoly']:
             module_tec = 'multisi'
-        elif t in ['polySi',  'polysi', 'mtSiPoly']:
-            module_tec = 'polisi'
-        elif t in ['CIS',  'cis']:
-            module_tec = 'cis'
-        elif t in ['CIGS', 'cigs']:
+        elif t in ['CIS',  'cis', 'CIGS', 'cigs']:
             module_tec = 'cigs'
         elif t in ['CdTe', 'cdte', 'Thin Film',  'GaAs']:
             module_tec = 'cdte'
         elif t in ['amorphous', 'asi', 'a-Si / mono-Si', '2-a-Si',  '3-a-Si',  'Si-Film', 'HIT-Si']:
-            module_tec = 'asi'
+            module_tec = 'amorphous'
         else:
             module_tec = None
             
@@ -1289,9 +1295,9 @@ def execute():
         
         if bifacial_vbox.children[0].children[0].children[1].value == False:
             bifacial = False
-            bifaciality = 0.0
-            row_height = 0.0
-            row_width = 0.0
+            bifaciality = None
+            row_height = None
+            row_width = None
         else:
             bifacial = True
             bifaciality = bifacial_vbox.children[1].children[0].children[1].value
@@ -1379,8 +1385,8 @@ def execute():
                                 # Inverter
                                 #'inverters_database': inverter_status[0],
                                 'inverter_name': inverter_status[1],
-                                'inverter': dict(inverter_status[2]),
                                 'ac_model': inverter_status[3],
+                                'inverter': dict(inverter_status[2]),
 
                                 # PV Module
                                 #'modules_database': module_status[0],

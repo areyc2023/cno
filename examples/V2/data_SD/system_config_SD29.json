@@ -4,6 +4,8 @@
   "tz": "America/Bogota",
   "altitude": 2632.0,
   "surface_albedo": 0.18,
+  "inverter_name": "ABB__TRIO_27_6_TL_OUTD_S_US_480__480V_",
+  "ac_model": "sandia",
   "inverter": {
     "Paco": 27600.0,
     "Pdco": 28199.2,
@@ -15,11 +17,11 @@
     "C3": -0.001753,
     "Pnt": 8.28
   },
-  "ac_model": "sandia",
+  "module_name": "LG_Electronics_Inc__LG400N2W_A5",
   "module": {
     "T_NOCT": 47.7,
     "Technology": "monosi",
-    "N_s": 72.0,
+    "N_s": 72,
     "I_sc_ref": 10.47,
     "V_oc_ref": 49.3,
     "I_mp_ref": 9.86,
@@ -30,9 +32,9 @@
     "STC": 400.316
   },
   "bifacial": false,
-  "bifaciality": 0.0,
-  "row_height": 0.0,
-  "row_width": 0.0,
+  "bifaciality": null,
+  "row_height": null,
+  "row_width": null,
   "num_arrays": 1,
   "modules_per_string": [
     18

@@ -13,6 +13,7 @@ dependencies:
   - python==3.10.4
   - pip:
     - ipywidgets==8.0.2
+	- jsonschema==4.16.0
     - nrel-pysam==3.0.2
     - pvfactors==1.5.2
     - pvlib==0.9.3
