@@ -32,6 +32,16 @@ La descarga de los archivos de producción y de las gráficas (cuaderno `CNO_Pro
 
 ## Instalación
 
+#### Repositorio
+
+Para [clonar](https://docs.github.com/es/repositories/creating-and-managing-repositories/cloning-a-repository) el repositorio `cnosolar` se recomienda usar el software [GitHub Desktop](https://desktop.github.com/). La url del repositorio es: [cno/cno_solar](https://git.cno.org.co/cno/cno_solar).
+
+Otra opción es desde el terminal con en el ambiente activado; para esto ejecute:
+
+```bash
+$ git clone https://git.cno.org.co/cno/cno_solar
+```
+
 #### Distribución y Ambiente
 
 Se recomienda instalar [Miniforge](https://github.com/conda-forge/miniforge) como ambiente para instalar Python y las librerías necesarias para la ejecución de los protocolos. Miniforge es una distribución de Python y el administrador de paquetes `conda`, permite fácilmente la configuración de ambientes y la instalación de paquetes desde el repositorio `conda-forge`.
@@ -69,16 +79,6 @@ Finalmente se instala el kernel correspondiente al ambiente recien creado.
 
 ```terminal
 > python -m ipykernel install --user --name cno-solar --display-name "cno-solar"
-```
-
-#### Repositorio
-
-Para [clonar](https://docs.github.com/es/repositories/creating-and-managing-repositories/cloning-a-repository) el repositorio `cnosolar` se recomienda usar el software [GitHub Desktop](https://desktop.github.com/). La url del repositorio es: [andresgm/cno_solar](https://git.cno.org.co/cno/cno_solar).
-
-Otra opción es desde el terminal con en el ambiente activado; para esto ejecute:
-
-```bash
-$ git clone https://git.cno.org.co/cno/cno_solar
 ```
 
 ## Licencia
