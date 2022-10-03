@@ -36,7 +36,7 @@ La descarga de los archivos de producción y de las gráficas (cuaderno `CNO_Pro
 
 Se recomienda instalar [Miniforge](https://github.com/conda-forge/miniforge) como ambiente para instalar Python y las librerías necesarias para la ejecución de los protocolos. Miniforge es una distribución de Python y el administrador de paquetes `conda`, permite fácilmente la configuración de ambientes y la instalación de paquetes desde el repositorio `conda-forge`.
 
-![conda-forge/miniforge](../conda-forge.png)
+![conda-forge/miniforge](images/conda-forge.png)
 
 Luego de descargar e instalar `Miniforge`, inicie el terminal mediante la aplicación `Miniforge Prompt`. Si la instalación se realizó de manera correcta, debe estar en el ambiente `(base)`. 
 
