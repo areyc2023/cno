@@ -20,7 +20,7 @@ from cnosolarV2 import pipeline
 from cnosolarV2 import production
 from cnosolarV2 import pvstructure
 from cnosolarV2 import verification
-from cnosolarV2.pvsyst_tools import pvsyst
+from cnosolarV2 import pvsyst
 
 if __name__ == '__main__':
     print(f'Successfully executed from {__name__}.')

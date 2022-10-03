@@ -14,8 +14,6 @@ import ipywidgets as widgets
 from tkinter import Tk, filedialog
 from IPython.display import display
 
-from cnosolar.pvsyst_tools import pvsyst
-
 def execute():
     '''
     Graphical user interface for the configuration of the PV plant 
@@ -582,7 +580,7 @@ def execute():
         btn.icon = 'check-circle'
         with output:
             output.clear_output()
-            ond = pvsyst.ond_to_inverter_param(path=upload_btn.files)
+            ond = cno.pvsyst.ond_to_inverter_param(path=upload_btn.files)
             inverter = {'Vac': float(ond['pvGInverter']['TConverter']['VOutConv']), # Voltaje de red (Parámetros principales)
                         'Pso': float(ond['pvGInverter']['TConverter']['PLim1']), # Pthresh
                         'Paco': float(ond['pvGInverter']['TConverter']['PNomConv'])*1000, # Potencia CA máxima
@@ -846,7 +844,7 @@ def execute():
 
         with modbtn_output:
             modbtn_output.clear_output()
-            module = pvsyst.pan_to_module_param(path=upload_modbtn.files)
+            module = cno.pvsyst.pan_to_module_param(path=upload_modbtn.files)
             module['Adjust'] = 0
             module['Technology'] = module['Technol']
             module['T_NOCT'] = module['TRef'] + 20
