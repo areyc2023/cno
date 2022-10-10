@@ -221,7 +221,7 @@ def execute():
     # Download Production Button
     download_cen = widgets.Button(value=False,
                                   description='Descargar Producción',
-                                  disabled=False,
+                                  disabled=True,
                                   button_style='',
                                   tooltip='Descarga CSV de la Producción del Sistema',
                                   icon='download',
@@ -258,6 +258,8 @@ def execute():
 
             w_cen.description = 'CEN Calculada'
             w_cen.icon = 'check'
+            
+            download_cen.disabled = False
             
     w_cen.on_click(on_button_clicked_cen)
 
@@ -556,7 +558,7 @@ def execute():
     # Download Button
     download_rp = widgets.Button(value=False,
                                  description='Descargar Producción',
-                                 disabled=False,
+                                 disabled=True,
                                  button_style='',
                                  tooltip='Descarga CSV de la Producción del Sistema',
                                  icon='download',
@@ -631,8 +633,11 @@ def execute():
                                             energy_units='Wh')
 
             w_rp.files = {'bus_pipeline': bus_pipeline}
+            
             w_rp.description = 'Ejecutado'
             w_rp.icon = 'check'
+            
+            download_rp.disabled = False
 
     w_rp.on_click(on_button_clicked_bus)
 

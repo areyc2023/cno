@@ -592,9 +592,17 @@ def execute():
             except:
                 paco = float(ond['pvGInverter']['TConverter']['PNomConv'])*1000
                 pdco = paco / eta_inv_nom
+                
+            try:
+                pso = float(ond['pvGInverter']['TConverter']['Pthresh'])*1000
+            except:
+                if pdco >= 1e06:
+                    pso = pdco * 0.005
+                else:
+                    pso = pdco * 0.01 # https://www.pvsyst.com/help/inverters_general.htm
             
             inverter = {'Vac': float(ond['pvGInverter']['TConverter']['VOutConv']), # Voltaje de red (Parámetros principales)
-                        'Pso': float(ond['pvGInverter']['TConverter']['PLim1']), # Pthresh
+                        'Pso': np.round(pso, 2), # Pthresh
                         'Paco': float(ond['pvGInverter']['TConverter']['PNomConv'])*1000, # Potencia CA máxima
                         'Pdco': np.round(pdco, 2), # Potencia FV nominal
                         #'pdc0': float(ond['pvGInverter']['TConverter']['PNomDC'])*1000,
