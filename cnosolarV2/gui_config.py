@@ -615,7 +615,7 @@ def execute():
                         'eta_inv_nom': np.round(eta_inv_nom, 4),
                         'eta_inv_ref': 0.9637,
                         'Name': '{} {}'.format(ond['pvGInverter']['pvCommercial']['Manufacturer'], ond['pvGInverter']['pvCommercial']['Model'])}
-            btn.files = {'inv': inverter}
+            btn.files = {'inv': inverter, 'ond': ond}
 
     # MANUAL
     def handle_dropdown_manual(change):    
@@ -1144,10 +1144,65 @@ def execute():
             inverters_database = None
             inverter_name = inverter['Name'] 
             
-            ac_model = 'pvwatts'
+            # Sandia
+            try:
+                # Curve inputs
+                n = 6
 
-            inverter = {'Pdco': inverter['Pdco'],
-                        'eta_inv_nom': inverter['eta_inv_nom']}
+                # Voltaje level (Vmin, Vnom and Vmax)
+                dc_voltage_level = ['Vmin']*n
+                dc_voltage_level.extend(v for v in ['Vnom']*n)
+                dc_voltage_level.extend(v for v in ['Vmax']*n)
+
+                # Voltaje values (Vmin, Vnom and Vmax)
+                volts = btn.files['ond']['pvGInverter']['TConverter']['VNomEff'].split(',')
+
+                dc_voltage = [float(volts[0])]*n
+                dc_voltage.extend(v for v in [float(volts[1])]*n)
+                dc_voltage.extend(v for v in [float(volts[2])]*n)
+
+                # Power values
+                dc_power = []
+                ac_power = []
+
+                for i in range(1, 4):
+                    profile = f'ProfilPIOV{i}'
+                    for j in range(2, 8):
+                        aux = list(map(float, btn.files['ond']['pvGInverter']['TConverter'][profile][f'Point_{j}'].split(',')))
+                        dc_power.append(aux[0])
+                        ac_power.append(aux[1])
+
+                # Fit Sandia                
+                data = pd.DataFrame({'dc_power': dc_power, # W
+                                     'ac_power': ac_power, # W
+                                     'dc_voltage': dc_voltage, # V
+                                     'dc_voltage_level': dc_voltage_level})
+
+                params = pvlib.inverter.fit_sandia(ac_power=data['ac_power'], # W 
+                                                   dc_power=data['dc_power'], # W 
+                                                   dc_voltage=data['dc_voltage'], # V 
+                                                   dc_voltage_level=data['dc_voltage_level'], 
+                                                   p_ac_0=inverter['Paco'], # W 
+                                                   p_nt=inverter['Pnt']) # W
+
+                # Inverter
+                ac_model = 'sandia'
+
+                inverter = {'Paco': inverter['Paco'],
+                            'Pdco': inverter['Pdco'],
+                            'Vdco': inverter['Vdco'],
+                            'Pso': inverter['Pso'],
+                            'C0': float('{:0.6e}'.format(params['C0'])),
+                            'C1': float('{:0.6e}'.format(params['C1'])),
+                            'C2': np.round(params['C2'], 6),
+                            'C3': np.round(params['C3'], 6),
+                            'Pnt': inverter['Pnt']}
+
+            except:
+                ac_model = 'pvwatts'
+
+                inverter = {'Pdco': inverter['Pdco'],
+                            'eta_inv_nom': inverter['eta_inv_nom']}
 
         if inverter_btn.value == 'Manual':
             if dropdown_manual.value == 'Sandia':

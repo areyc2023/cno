@@ -5,10 +5,17 @@
   "altitude": 2632.0,
   "surface_albedo": 0.18,
   "inverter_name": "Ingeteam INGECON SUN 1690TL B650 OUTDOOR",
-  "ac_model": "pvwatts",
+  "ac_model": "sandia",
   "inverter": {
+    "Paco": 1520000.0,
     "Pdco": 1723000.0,
-    "eta_inv_nom": 0.95
+    "Vdco": 1061.0,
+    "Pso": 8615.0,
+    "C0": -3.641439e-09,
+    "C1": 1.414647e-05,
+    "C2": 0.001599,
+    "C3": 0.000817,
+    "Pnt": 90.0
   },
   "module_name": "Canadian Solar Inc. CS3U-350P 1500V HE",
   "module": {
