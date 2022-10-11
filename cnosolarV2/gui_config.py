@@ -615,6 +615,7 @@ def execute():
                         'eta_inv_nom': np.round(eta_inv_nom, 4),
                         'eta_inv_ref': 0.9637,
                         'Name': '{} {}'.format(ond['pvGInverter']['pvCommercial']['Manufacturer'], ond['pvGInverter']['pvCommercial']['Model'])}
+            
             btn.files = {'inv': inverter, 'ond': ond}
 
     # MANUAL
@@ -1198,6 +1199,7 @@ def execute():
                             'C3': np.round(params['C3'], 6),
                             'Pnt': inverter['Pnt']}
 
+            # PVWatts
             except:
                 ac_model = 'pvwatts'
 
