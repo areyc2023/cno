@@ -608,10 +608,10 @@ def execute():
                         #'pdc0': float(ond['pvGInverter']['TConverter']['PNomDC'])*1000,
                         'Vdco': float(ond['pvGInverter']['TConverter']['VNomEff'].split(',')[1]), # Voltaje medio
                         'Pnt': float(ond['pvGInverter']['Night_Loss']), # Night Loss
-                        'Vdcmax': float(ond['pvGInverter']['TConverter']['VAbsMax']), # Alto voltaje (Ventrada en curva efic)
-                        'Idcmax': float(ond['pvGInverter']['TConverter']['IMaxDC']),
-                        'Mppt_low': float(ond['pvGInverter']['TConverter']['VMppMin']), # Vmín@Pnom
-                        'Mppt_high': float(ond['pvGInverter']['TConverter']['VMPPMax']), # Alto Voltaje
+                        #'Vdcmax': float(ond['pvGInverter']['TConverter']['VAbsMax']), # Alto voltaje (Ventrada en curva efic)
+                        #'Idcmax': float(ond['pvGInverter']['TConverter']['IMaxDC']),
+                        #'Mppt_low': float(ond['pvGInverter']['TConverter']['VMppMin']), # Vmín@Pnom
+                        #'Mppt_high': float(ond['pvGInverter']['TConverter']['VMPPMax']), # Alto Voltaje
                         'eta_inv_nom': np.round(eta_inv_nom, 4),
                         'eta_inv_ref': 0.9637,
                         'Name': '{} {}'.format(ond['pvGInverter']['pvCommercial']['Manufacturer'], ond['pvGInverter']['pvCommercial']['Model'])}
