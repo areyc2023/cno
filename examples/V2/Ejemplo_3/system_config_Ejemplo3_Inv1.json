@@ -4,13 +4,13 @@
   "tz": "America/Bogota",
   "altitude": 2632.0,
   "surface_albedo": 0.18,
-  "inverter_name": "Fabricante Referencia E3 Inv1",
+  "inverter_name": "ABB__TRIO_27_6_TL_OUTD_S_US_480__480V_",
   "ac_model": "pvwatts",
   "inverter": {
     "Pdco": 28199.2,
     "eta_inv_nom": 0.98
   },
-  "module_name": "Fabricante Referencia E3",
+  "module_name": "Canadian Solar Inc. CS3W-435PB-AG",
   "module": {
     "T_NOCT": 44.0,
     "Technology": "monosi",

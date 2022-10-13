@@ -246,7 +246,7 @@ def execute():
 
                                       <li> <b>PVWatts</b> 
                                        <ul class='square'>
-                                         <li> <b>$P_{DC}$ Nominal:</b> Potencia DC nominal del inversor en W.</li>
+                                         <li> <b>$P_{AC}$ Nominal:</b> Potencia AC nominal del inversor en W.</li>
                                          <li> <b>Eficiencia Nominal:</b> Eficiencia nominal del inversor en magnitud adimensional.</li>
                                          <li> <b>Referencia Inversor:</b> Referencia completa del inversor incluyendo el fabricante y modelo.</li>
                                        </ul>
@@ -280,7 +280,7 @@ def execute():
 
                                   <h5>Método de Configuración: Manual</h5>
                                   <ul>
-                                    <li> <b>$T_{NOCT}$:</b> Temperatura nominal de funcionamiento de la celda en ºC. </li>
+                                    <li> <b>NOCT:</b> Temperatura nominal de funcionamiento (en condiciones NOCT) de la celda en ºC. </li>
                                     <li> <b>Tecnología:</b> Tecnología de la celda fotovoltaica. </li>
                                     <li> <b>Número Celdas:</b> Número de celdas fotovoltaicas en serie. </li>
                                     <li> <b>$I_{SC}$ en STC:</b> Corriente de corto circuito en condiciones STC en A. </li>
@@ -320,7 +320,7 @@ def execute():
                                       <ul>
                                         <li> <b>Sin Seguidor</b> 
                                          <ul class='square'>
-                                           <li> <b>Azimutal:</b> Ángulo azimutal en grados decimales (Norte = 0, Sur = 180, Este = 90, Oeste = 270). Para múltiples subarrays, separe los valores con una coma de manera ordenada (también aplica si el azimutal es el mismo).</li>
+                                           <li> <b>Azimutal:</b> Ángulo azimutal en grados decimales <span style='color:blue'>(Norte = 0, Sur = 180, Este = 90, Oeste = 270) </span>. Para múltiples subarrays, separe los valores con una coma de manera ordenada (también aplica si el azimutal es el mismo).</li>
                                            <li> <b>Elevación:</b> Ángulos de inclinación desde la horizontal en grados decimales. Para múltiples subarrays, separe los valores con una coma de manera ordenada (también aplica si la elevación es la misma).</li>
                                            <li> <b>Racking:</b> Tipo de ventilación del montaje. Se utiliza para identificar un conjunto de parámetros para el modelo de temperatura de la celda.</li>
                                          </ul>
@@ -331,7 +331,7 @@ def execute():
 
                                          <ul class='square'>
                                            <li> <b>Elevación Eje:</b> Elevación del eje de rotación con respecto a la horizontal en grados decimales (e.g., un valor de 0º indica que el eje de soporte de los paneles fotovoltaicos está horizontal). Para múltiples subarrays, separe los valores con una coma de manera ordenada (también aplica si la elevación del eje es la misma).</li>
-                                           <li> <b>Azimutal Eje:</b> Ángulo perpendicular por regla de la mano derecha al eje de rotación en grados decimales (e.g., un valor de 180º --i.e., dirección sur-- indica una rotación de este a oeste). Para múltiples subarrays, separe los valores con una coma de manera ordenada (también aplica si el azimutal del eje es el mismo).</li>
+                                           <li> <b>Azimutal Eje:</b> Ángulo perpendicular por regla de la mano derecha al eje de rotación en grados decimales (e.g., un valor de 180º –i.e., dirección sur– indica una rotación de este a oeste). Para múltiples subarrays, separe los valores con una coma de manera ordenada (también aplica si el azimutal del eje es el mismo).</li>
                                            <li> <b>Ángulo Máximo:</b> Ángulo de rotación máximo del seguidor desde su posición horizontal en grados decimales (e.g., un valor de 90º permite que el seguidor gire desde y hasta una posición vertical en la que el panel mira hacia el horizonte). Para múltiples subarrays, separe los valores con una coma de manera ordenada (también aplica si el ángulo máximo es el mismo).</li>
                                            <li> <b>Racking:</b> Tipo de ventilación del montaje. Se utiliza para identificar un conjunto de parámetros para el modelo de temperatura de la celda.</li>
                                          </ul>
@@ -652,7 +652,7 @@ def execute():
             w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
 
             inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración PVWatts</h5>', layout=widgets.Layout(height='auto'))]),
-                                     widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_pdc0], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('$P_{AC}$ Nominal [W]'), w_pdc0], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Eficiencia Nominal [ad.]'), w_eta_inv_nom], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Referencia Inversor'), w_Name], layout=GUI_LAYOUT)])
 
@@ -798,7 +798,7 @@ def execute():
             w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
 
             mod_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Módulo</h5>', layout=widgets.Layout(height='auto'))]),
-                                     widgets.Box([widgets.Label('$T_{NOCT}$ [ºC]'), w_T_NOCT], layout=GUI_LAYOUT),
+                                     widgets.Box([widgets.Label('NOCT [ºC]'), w_T_NOCT], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Tecnología'), w_Type], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Número Celdas'), w_N_s], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('$I_{SC}$ en STC [A]'), w_I_sc_ref], layout=GUI_LAYOUT),
@@ -1228,8 +1228,13 @@ def execute():
             elif dropdown_manual.value == 'PVWatts':
                 ac_model = 'pvwatts'
                 
-                inverter = {'Pdco': inverter_vbox.children[2].children[1].children[1].value,
-                            'eta_inv_nom': inverter_vbox.children[2].children[2].children[1].value}
+                paco = inverter_vbox.children[2].children[1].children[1].value
+                eta_inv_nom = inverter_vbox.children[2].children[2].children[1].value
+                
+                pdco = np.round(paco/eta_inv_nom, 2)
+                
+                inverter = {'Pdco': pdco,
+                            'eta_inv_nom': eta_inv_nom}
                 
                 inverter_name = inverter_vbox.children[2].children[3].children[1].value
 
