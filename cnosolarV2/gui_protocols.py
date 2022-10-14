@@ -203,7 +203,7 @@ def execute():
     cen_output = widgets.Output()
 
     # Percentil
-    w_cenpercentil = widgets.BoundedFloatText(value=99, 
+    w_cenpercentil = widgets.BoundedFloatText(value=99.9, 
                                               min=0, 
                                               max=100, 
                                               step=0.1,
