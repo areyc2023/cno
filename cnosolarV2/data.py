@@ -78,6 +78,9 @@ def load_csv(file_name, tz):
     df = df.fillna(0)
     
     if df.index.tz == None:
-        df = df.tz_convert(tz)
+        try:
+            df = df.tz_convert(tz)
+        except:
+            df = df.tz_localize(tz)
 
     return df
