@@ -56,25 +56,29 @@ def get_cen(ac, perc, color='#1580E4', mag='W', dwnld=False):
     References
     ----------
     Comisión de Regulación de Energía y Gas (2000). Resolución No. 081 de 2000. 
-    http://apolo.creg.gov.co/
+    http://apolo.creg.gov.co/ and https://www.creg.gov.co/capacidad-efectiva-neta
     '''
     punits = {'W': 1, 'kW': 1000, 'MW': 1000000}
     
     pac = np.sort(ac)
     pac_max = np.max(ac)
-    
+    '''
     if pac_max >= 1000000:
         decimals = 0
     else:
         decimals = 4
-
+    '''
     # Calculate the proportional values of samples
     p = 1. * np.arange(len(ac)) / (len(ac) - 1)
 
     # CEN
-    cen_per = np.round(np.percentile(ac, perc) / 1000000, decimals) # MW
-    cen_pmax = np.round(np.max(ac) / 1000000, decimals) # MW
-
+    cen_per = np.round(np.percentile(ac, perc) / 1000000, decimals=4) # MW
+    cen_pmax = np.round(np.max(ac) / 1000000, decimals=4) # MW
+    
+    if cen_pmax >= 1:
+        cen_per = np.floor(cen_per)
+        cen_pmax = np.floor(cen_pmax)
+    
     print(f'Pac Max. = {cen_pmax} MW\nCEN ({perc}%) = {cen_per} MW')
 
     # Curve plot
