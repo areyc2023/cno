@@ -1,7 +1,3 @@
-###############################
-#      CONFIGURATION GUI      #
-###############################
-
 import json
 import pytz
 import pvlib
@@ -202,7 +198,14 @@ def execute():
                                 justify_content='space-between')
     
     STYLE = {'description_width': 'initial'}
-    
+
+    doc_preconfiguracion = widgets.HTMLMath('''
+                                            <h3>Preconfigurar JSON</h3>
+                                            <ul>
+                                                <li> <b>Configuración Sistema (.JSON):</b> Archivo de configuración del sistema (.JSON) para preconfigurar el Cuaderno de Jupyter siempre y cuando todos los parámetros estén presentes en el archivo cargado.</li>
+                                            </ul>
+                                            ''', layout=widgets.Layout(height='auto'))
+
     doc_location = widgets.HTML('''
                                 <h5>Información Geográfica</h5>
                                 <ul>
@@ -354,11 +357,12 @@ def execute():
                                      </ul>
                                      ''', layout=widgets.Layout(height='auto'))
 
-    ac_documentation = widgets.Accordion(children=[doc_location, doc_inverter, doc_module, doc_sysdesign])
-    ac_documentation.set_title(0, 'Tab Ubicación')
-    ac_documentation.set_title(1, 'Tab Inversor')
-    ac_documentation.set_title(2, 'Tab Módulo')
-    ac_documentation.set_title(3, 'Tab Diseño Planta')
+    ac_documentation = widgets.Accordion(children=[doc_preconfiguracion, doc_location, doc_inverter, doc_module, doc_sysdesign])
+    ac_documentation.set_title(0, 'Tab Preconfiguración')
+    ac_documentation.set_title(1, 'Tab Ubicación')
+    ac_documentation.set_title(2, 'Tab Inversor')
+    ac_documentation.set_title(3, 'Tab Módulo')
+    ac_documentation.set_title(4, 'Tab Diseño Planta')
 
     tab_doc = widgets.Box([widgets.HTML('<h4>Documentación</h4>', layout=widgets.Layout(height='auto')), 
                            widgets.VBox([widgets.Box([ac_documentation], layout=GUI_LAYOUT)])], 
@@ -618,20 +622,23 @@ def execute():
             
             btn.files = {'inv': inverter, 'ond': ond}
 
+    w_Paco = widgets.FloatText(value=None, description='', style=STYLE)
+    w_Pdco = widgets.FloatText(value=None, description='', style=STYLE)
+    w_Vdco = widgets.FloatText(value=None, description='', style=STYLE)
+    w_Pso = widgets.FloatText(value=None, description='', style=STYLE)
+    w_C0 = widgets.FloatText(value=None, description='', style=STYLE)
+    w_C1 = widgets.FloatText(value=None, description='', style=STYLE)
+    w_C2 = widgets.FloatText(value=None, description='', style=STYLE)
+    w_C3 = widgets.FloatText(value=None, description='', style=STYLE)
+    w_Pnt = widgets.FloatText(value=None, description='', style=STYLE)
+    w_Name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
+
+    w_pdc0 = widgets.FloatText(value=None, description='', style=STYLE)
+    w_eta_inv_nom = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.01, description='', style=STYLE)
+
     # MANUAL
     def handle_dropdown_manual(change):    
         if change['new'] == 'Sandia':
-            w_Paco = widgets.FloatText(value=None, description='', style=STYLE)
-            w_Pdco = widgets.FloatText(value=None, description='', style=STYLE)
-            w_Vdco = widgets.FloatText(value=None, description='', style=STYLE)
-            w_Pso = widgets.FloatText(value=None, description='', style=STYLE)
-            w_C0 = widgets.FloatText(value=None, description='', style=STYLE)
-            w_C1 = widgets.FloatText(value=None, description='', style=STYLE)
-            w_C2 = widgets.FloatText(value=None, description='', style=STYLE)
-            w_C3 = widgets.FloatText(value=None, description='', style=STYLE)
-            w_Pnt = widgets.FloatText(value=None, description='', style=STYLE)
-            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
-
             inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Sandia</h5>', layout=widgets.Layout(height='auto'))]),
                                      widgets.Box([widgets.Label('$P_{AC}$ Nominal  [W]'), w_Paco], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('$P_{DC}$ Nominal [W]'), w_Pdco], layout=GUI_LAYOUT),
@@ -647,10 +654,6 @@ def execute():
             inverter_vbox.children = [inverter_btn, w_dropmanual, inv_conf]
 
         else:
-            w_pdc0 = widgets.FloatText(value=None, description='', style=STYLE)
-            w_eta_inv_nom = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.01, description='', style=STYLE)
-            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
-
             inv_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración PVWatts</h5>', layout=widgets.Layout(height='auto'))]),
                                      widgets.Box([widgets.Label('$P_{AC}$ Nominal [W]'), w_pdc0], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Eficiencia Nominal [ad.]'), w_eta_inv_nom], layout=GUI_LAYOUT),
@@ -775,7 +778,20 @@ def execute():
 
     w_dropbrifacial = widgets.VBox([widgets.Box([widgets.Label('Panel Bifacial'), dropdown_bifacial], layout=GUI_LAYOUT)])
     bifacial_vbox = widgets.VBox([w_dropbrifacial])
-    
+
+    w_T_NOCT = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_Type = widgets.Dropdown(options=[('Mono-Si', 'monosi'), ('Multi-Si', 'multisi'), ('Poli-Si', 'polysi'), ('CIS', 'cis'), ('CIGS', 'cigs'), ('CdTe', 'cdte'), ('Amorfo', 'amorphous')], value='monosi', description='', style=STYLE)
+    w_N_s = widgets.FloatText(value=None, description='', style=STYLE)
+    w_I_sc_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_V_oc_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_I_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_V_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_alpha_sc = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_beta_oc = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_gamma_r = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_STC = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
+    w_Name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
+
     def handle_modtoggle(change):
         if change['new'] == 'Repositorio':
             module_vbox.children = [module_btn, w_dropmodrepo]
@@ -783,20 +799,7 @@ def execute():
         elif change['new'] == 'PVsyst':
             module_vbox.children = [module_btn, w_modupload]
 
-        elif change['new'] == 'Manual':  
-            w_T_NOCT = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_Type = widgets.Dropdown(options=[('Mono-Si', 'monosi'), ('Multi-Si', 'multisi'), ('Poli-Si', 'polysi'), ('CIS', 'cis'), ('CIGS', 'cigs'), ('CdTe', 'cdte'), ('Amorfo', 'amorphous')], value='monosi', description='', style=STYLE)
-            w_N_s = widgets.FloatText(value=None, description='', style=STYLE)
-            w_I_sc_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_V_oc_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_I_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_V_mp_ref = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_alpha_sc = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_beta_oc = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_gamma_r = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_STC = widgets.FloatText(value=None, step=0.1, description='', style=STYLE)
-            w_Name = w_name = widgets.Text(value='', placeholder='Referencia Completa', description='', style=STYLE)
-
+        elif change['new'] == 'Manual':
             mod_conf = widgets.VBox([widgets.Box([widgets.HTML('<h5>Configuración Módulo</h5>', layout=widgets.Layout(height='auto'))]),
                                      widgets.Box([widgets.Label('NOCT [ºC]'), w_T_NOCT], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Tecnología'), w_Type], layout=GUI_LAYOUT),
@@ -874,14 +877,14 @@ def execute():
             
             if module['T_NOCT'] >= 50:
                 module['T_NOCT'] = module['TRef']
-    
+
+    w_bifaciality = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.1, description='', style=STYLE)
+    w_rowheight = widgets.BoundedFloatText(value=None, min=0, max=1000, step=0.1, description='', style=STYLE)
+    w_rowwidth = widgets.BoundedFloatText(value=None, min=0, max=1000, step=0.1, description='', style=STYLE)
+
     # BIFACIAL 
     def handle_dropdown_bifacial(change):
         if change['new'] == True:
-            w_bifaciality = widgets.BoundedFloatText(value=None, min=0, max=1, step=0.1, description='', style=STYLE)
-            w_rowheight = widgets.BoundedFloatText(value=None, min=0, max=1000, step=0.1, description='', style=STYLE)
-            w_rowwidth = widgets.BoundedFloatText(value=None, min=0, max=1000, step=0.1, description='', style=STYLE)
-
             bif_conf = widgets.VBox([widgets.Box([widgets.Label('Bifacialidad [ad.]'), w_bifaciality], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Alto Fila Paneles [m]'), w_rowheight], layout=GUI_LAYOUT),
                                      widgets.Box([widgets.Label('Ancho Fila Paneles [m]'), w_rowwidth], layout=GUI_LAYOUT)])
@@ -957,12 +960,16 @@ def execute():
 
     sysconfig_vbox = widgets.VBox([header_TO, tracker_btn])
 
+    w_Azimuth = widgets.Text(value=None, description='', style=STYLE)
+    w_Tilt = widgets.Text(value=None, description='', style=STYLE)
+    w_Racking = widgets.Dropdown(options=[('Open Rack', 'open_rack'), ('Close Mount', 'close_mount'), ('Insulated Back', 'insulated_back')], value='open_rack', description='', style=STYLE) # https://sam.nrel.gov/forum/forum-general/1040-mount-types.html#3148
+
+    w_AxisTilt = widgets.Text(value=None, description='', style=STYLE)
+    w_AxisAzimuth = widgets.Text(value=None, description='', style=STYLE)
+    w_MaxAngle = widgets.Text(value=None, description='', style=STYLE)
+
     def handle_toggle(change):
         if change['new'] == 'Sin Seguidor':
-            w_Azimuth = widgets.Text(value=None, description='', style=STYLE)
-            w_Tilt = widgets.Text(value=None, description='', style=STYLE)
-            w_Racking = widgets.Dropdown(options=[('Open Rack', 'open_rack'), ('Close Mount', 'close_mount'), ('Insulated Back', 'insulated_back')], value='open_rack', description='', style=STYLE) # https://sam.nrel.gov/forum/forum-general/1040-mount-types.html#3148
-
             if w_subarrays.value == 1:
                 v_angles = '0.0'
             else:
@@ -979,11 +986,6 @@ def execute():
             sysconfig_vbox.children = [header_TO, tracker_btn, no_tracker]
 
         elif change['new'] == 'Seguidor 1-Eje':
-            w_AxisTilt = widgets.Text(value=None, description='', style=STYLE)
-            w_AxisAzimuth = widgets.Text(value=None, description='', style=STYLE)
-            w_MaxAngle = widgets.Text(value=None, description='', style=STYLE)
-            w_Racking = widgets.Dropdown(options=[('Open Rack', 'open_rack'), ('Close Mount', 'close_mount'), ('Insulated Back', 'insulated_back')], value='open_rack', description='', style=STYLE) # https://sam.nrel.gov/forum/forum-general/1040-mount-types.html#3148
-
             if w_subarrays.value == 1:
                 v_angles = '0.0'
             else:
@@ -1504,17 +1506,239 @@ def execute():
 
         return system_configuration
 
+    # =============================================================================
+    # TAB PRECONFIGURACIÓN
+    # =============================================================================
+    # Botón para cargar archivos
+    class SelectFilesButton(widgets.Button):
+        '''A file widget that leverages tkinter.filedialog'''
+        def __init__(self, file_to_open, multiple_files):
+            super(SelectFilesButton, self).__init__()
+
+            # Add the selected_files trait
+            self.add_traits(files=traitlets.traitlets.Any())
+
+            # Create the button
+            self.description = 'Seleccionar'
+            self.icon = 'circle'
+            self.layout = widgets.Layout(width='32.9%', height='auto')
+            #self.style.button_color = 'orange'
+
+            # Set on click behavior
+            self.on_click(self.select_files)
+
+            self.file_to_open = file_to_open
+            self.multiple_files = multiple_files
+
+        @staticmethod
+        def select_files(b):
+            '''Generate instance of tkinter.filedialog '''
+            # Create Tk root
+            root = Tk()
+
+            # Hide the main window
+            root.withdraw()
+
+            # Raise the root to the top of all windows
+            root.call('wm', 'attributes', '.', '-topmost', True)
+
+            # List of selected fileswill be set to b.value
+            if b.file_to_open == 'JSON':
+                b.files = filedialog.askopenfilename(filetypes=(('Archivos JSON', '.json'),),
+                                                     multiple=b.multiple_files,
+                                                     title='Seleccione el archivo JSON')
+
+            elif b.file_to_open == 'CSV':
+                b.files = filedialog.askopenfilename(filetypes=(('Archivos CSV', '.csv'),),
+                                                     multiple=b.multiple_files,
+                                                     title='Seleccione el archivo CSV')
+
+            b.description = 'Seleccionado'
+            b.icon = 'check-circle'
+
+    btn_json = SelectFilesButton(file_to_open='JSON', multiple_files=False) # JSON
+
+    # Botón para inicializar archivos cargados
+    btn_cargar_preconfigurar = widgets.Button(value=False,
+                                              description='Cargar–Preconfigurar',
+                                              disabled=False,
+                                              button_style='',
+                                              tooltip='Cargar archivo JSON y preconfigurar',
+                                              icon='upload',
+                                              layout=widgets.Layout(width='32.9%', height='auto'))
+
+    btn_cargar_preconfigurar.add_traits(files=traitlets.traitlets.Dict())
+    output_cargar_preconfigurar = widgets.Output()
+
+    # Funciones
+    def btn_cargar_preconfigurar_clicked(obj):
+        with output_cargar_preconfigurar:
+            output_cargar_preconfigurar.clear_output()
+
+            # Carga de JSON
+            btn_cargar_preconfigurar.description = 'Cargado JSON'
+            btn_cargar_preconfigurar.icon = 'hourglass-2'
+
+            if btn_json.files == None:
+                raise ValueError('No se seleccionó ningún archivo JSON.')
+            else:
+                with open(btn_json.files) as f:
+                    DICT_JSON = json.load(f)
+
+            btn_cargar_preconfigurar.files = {'JSON': DICT_JSON}
+
+            btn_cargar_preconfigurar.description = 'JSON Cargado'
+            btn_cargar_preconfigurar.icon = 'check-circle'
+
+            # Preconfiguración
+            btn_cargar_preconfigurar.description = 'Preconfigurando'
+            btn_cargar_preconfigurar.icon = 'hourglass-2'
+
+            # Ejecutar Modelo de parque
+            DICT_JSON = btn_cargar_preconfigurar.files['JSON']
+            SCHEMA = cno.verification.schema()
+            KEYS = SCHEMA['properties']
+            SUBKEYS_pvwatts = ['Pdco', 'eta_inv_nom', 'T_NOCT', 'Technology', 'N_s', 'I_sc_ref', 'V_oc_ref', 'I_mp_ref', 'V_mp_ref', 'alpha_sc', 'beta_oc', 'gamma_r', 'STC']
+            SUBKEYS_sandia = ['Paco', 'Pdco', 'Vdco', 'Pso', 'C0', 'C1', 'C2', 'C3', 'Pnt', 'T_NOCT', 'Technology', 'N_s', 'I_sc_ref', 'V_oc_ref', 'I_mp_ref', 'V_mp_ref', 'alpha_sc', 'beta_oc', 'gamma_r', 'STC']
+
+            DICT_JSON_SUBKEYS = []
+            for i in ['inverter', 'module']:
+                DICT_JSON_SUBKEYS += DICT_JSON[i].keys()
+
+            # Key
+            for i in KEYS:
+                # Key
+                if i not in DICT_JSON.keys():
+                    raise ValueError("La llave '{i}' no está en el archivo JSON. No se puede preconfigurar.")
+
+            # Subkey
+            if DICT_JSON['ac_model'] == 'sandia':
+                _SUBKEYS = SUBKEYS_sandia
+            else:
+                _SUBKEYS = SUBKEYS_pvwatts
+
+            if len(_SUBKEYS) != len(set(DICT_JSON_SUBKEYS)):
+                raise ValueError("Alguna llave de las requeridas no está en el archivo JSON. No se puede preconfigurar.")
+
+            # Tab Ubicación
+            w_latitude.value = DICT_JSON['latitude']
+            w_longitude.value = DICT_JSON['longitude']
+            w_altitude.value = DICT_JSON['altitude']
+            w_timezone.value = DICT_JSON['tz']
+            w_surface.value = None
+            w_albedo.value = DICT_JSON['surface_albedo']
+
+            # Tab Inversor
+            inverter_btn.value = 'Manual'
+
+            if DICT_JSON['ac_model'] == 'sandia':
+                dropdown_manual.value = 'Sandia'
+                w_Paco.value = DICT_JSON['inverter']['Paco']
+                w_Pdco.value = DICT_JSON['inverter']['Pdco']
+                w_Vdco.value = DICT_JSON['inverter']['Vdco']
+                w_Pso.value = DICT_JSON['inverter']['Pso']
+                w_C0.value = DICT_JSON['inverter']['C0']
+                w_C1.value = DICT_JSON['inverter']['C1']
+                w_C2.value = DICT_JSON['inverter']['C2']
+                w_C3.value = DICT_JSON['inverter']['C3']
+                w_Pnt.value = DICT_JSON['inverter']['Pnt']
+                w_Name.value = DICT_JSON['inverter_name']
+
+            else:
+                dropdown_manual.value = 'PVWatts'
+                w_pdc0.value = DICT_JSON['inverter']['Pdco']
+                w_eta_inv_nom.value = DICT_JSON['inverter']['eta_inv_nom']
+                w_Name.value = DICT_JSON['inverter_name']
+
+            # Tab Módulo
+            module_btn.value = 'Manual'
+
+            w_T_NOCT.value = DICT_JSON['module']['T_NOCT']
+            w_N_s.value = DICT_JSON['module']['N_s']
+            w_I_sc_ref.value = DICT_JSON['module']['I_sc_ref']
+            w_V_oc_ref.value = DICT_JSON['module']['V_oc_ref']
+            w_I_mp_ref.value = DICT_JSON['module']['I_mp_ref']
+            w_V_mp_ref.value = DICT_JSON['module']['V_mp_ref']
+            w_alpha_sc.value = DICT_JSON['module']['alpha_sc']
+            w_beta_oc.value = DICT_JSON['module']['beta_oc']
+            w_gamma_r.value = DICT_JSON['module']['gamma_r']
+            w_STC.value = DICT_JSON['module']['STC']
+            w_Name.value = DICT_JSON['module_name']
+            w_Type.value = DICT_JSON['module']['Technology']
+
+            dropdown_bifacial.value = DICT_JSON['bifacial']
+
+            if dropdown_bifacial.value == False:
+                w_bifaciality.value = 0
+                w_rowheight.value = 0
+                w_rowwidth.value = 0
+            else:
+                w_bifaciality.value = DICT_JSON['bifaciality']
+                w_rowheight.value = DICT_JSON['row_height']
+                w_rowwidth.value = DICT_JSON['row_width']
+
+            # Tab Diseño Planta
+            w_subarrays.value = DICT_JSON['num_arrays']
+            w_mps.value = ', '.join([str(i) for i in DICT_JSON['modules_per_string']])
+            w_spi.value = ', '.join([str(i) for i in DICT_JSON['strings_per_inverter']])
+            w_numinv.value = DICT_JSON['num_inverter']
+
+            if DICT_JSON['with_tracker'] == False:
+                tracker_btn.value = 'Sin Seguidor'
+                w_Azimuth.value = ', '.join([str(i) for i in DICT_JSON['surface_azimuth']])
+                w_Tilt.value = ', '.join([str(i) for i in DICT_JSON['surface_tilt']])
+                w_AxisTilt.value = '0.0, ' * w_subarrays.value
+                w_AxisAzimuth.value = '0.0, ' * w_subarrays.value
+                w_MaxAngle.value = '0.0, ' * w_subarrays.value
+            else:
+                tracker_btn.value = 'Seguidor 1-Eje'
+                w_Azimuth.value = '0.0, ' * w_subarrays.value
+                w_Tilt.value = '0.0, ' * w_subarrays.value
+                w_AxisTilt.value = ', '.join([str(i) for i in DICT_JSON['axis_tilt']])
+                w_AxisAzimuth.value = ', '.join([str(i) for i in DICT_JSON['axis_azimuth']])
+                w_MaxAngle.value = ', '.join([str(i) for i in DICT_JSON['max_angle']])
+
+            if DICT_JSON['module_type'] == 'glass_glass':
+                w_Racking.value = 'open_rack'
+            else:
+                w_Racking.value = 'glass_polymer'
+
+            w_loss.value = DICT_JSON['loss']
+            kpc_loss.value = DICT_JSON['kpc']
+            kt_loss.value = DICT_JSON['kt']
+            kin_loss.value = DICT_JSON['kin']
+            w_name.value = DICT_JSON['name']
+
+            btn_cargar_preconfigurar.description = 'Preconfigurado'
+            btn_cargar_preconfigurar.icon = 'check-circle'
+
+    btn_cargar_preconfigurar.on_click(btn_cargar_preconfigurar_clicked)
+
+    # TAB Preconfiguración
+
+    widget_preconfiguracion = [widgets.Box([widgets.HTML('<h2>Preconfigurar JSON</h2>', layout=widgets.Layout(height='auto'))]),
+                               widgets.Box([widgets.Label('Configuración Sistema (.JSON)'), btn_json, btn_cargar_preconfigurar], layout=GUI_LAYOUT),
+                               widgets.Box([widgets.HTML('<h4> </h4>', layout=widgets.Layout(height='auto'))]),
+                               widgets.Box([output_cargar_preconfigurar], layout=GUI_LAYOUT)]
+
+    tab_preconfiguracion = widgets.Box(widget_preconfiguracion, layout=widgets.Layout(display='flex',
+                                                                                      flex_flow='column',
+                                                                                      border='solid 0px',
+                                                                                      align_items='stretch',
+                                                                                      width='60%'))
+
     # GUI - Dashboard
     item_layout = widgets.Layout(margin='0 0 25px 0')
 
-    tab = widgets.Tab([tab_doc, tab_location, tab_inverter, tab_module, tab_sysconfig], 
+    tab = widgets.Tab([tab_doc, tab_preconfiguracion, tab_location, tab_inverter, tab_module, tab_sysconfig],
                       layout=item_layout)
-    
+
     tab.set_title(0, 'Documentación')
-    tab.set_title(1, 'Ubicación')
-    tab.set_title(2, 'Inversor')
-    tab.set_title(3, 'Módulo')
-    tab.set_title(4, 'Diseño Planta')
+    tab.set_title(1, 'Preconfiguración')
+    tab.set_title(2, 'Ubicación')
+    tab.set_title(3, 'Inversor')
+    tab.set_title(4, 'Módulo')
+    tab.set_title(5, 'Diseño Planta')
 
     dashboard = widgets.VBox([tab])
     display(dashboard)

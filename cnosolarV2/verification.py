@@ -160,6 +160,9 @@ SCHEMA = {'$schema': 'https://json-schema.org/draft/2020-12/schema',
           'additionalProperties': False,
           'minProperties': 30}
 
+def schema():
+    return SCHEMA
+
 # =============================================================================
 # JSON verification according to Acuerdo CNO XXXX
 # =============================================================================
