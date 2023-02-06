@@ -83,6 +83,18 @@ Finalmente, ejecute el siguiente comando para iniciar los cuadernos.
 jupyter notebook
 ```
 
+Si desea eliminar el ambiente creado, ejecute el siguiente comando:
+
+```terminal
+conda env remove -n cno-solar
+```
+
+Luego, para eliminar el kernel `cno-solar` creado, ejecute el siguiente comando:
+
+```terminal
+jupyter kernelspec remove cno-solar
+```
+
 ## Licencia
 
 GNU AFFERO GENERAL PUBLIC LICENSE v3.0, dispuesta en el archivo `LICENSE`.
