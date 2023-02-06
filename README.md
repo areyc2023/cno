@@ -53,18 +53,18 @@ Luego de descargar e instalar `Miniforge`, inicie el terminal mediante la aplica
 Se creará un ambiente específico para correr los protocolos, el cual llamaremos `cno-solar`, y se instalarán los paquetes necesarios. Con este fin abra un terminal con la aplicación `Miniforge Prompt` y desde el ambiente `(base)` **muévase al directorio donde tiene descargado los archivos del protocolo**, por ejemplo, si los tiene descargados en el escritorio:
 
 ```terminal
-> cd C:\usuario\Desktop\cno_solar
+cd C:\usuario\Desktop\cno_solar
 ```
 
 Luego cree el ambiente con el comando:
 
 ```terminal
-> conda env create --file environment.yml
+conda env create --file environment.yml
 ```
 Ahora, se activa dicho ambiente:
 
 ```terminal
-> conda activate cno-solar
+conda activate cno-solar
 ```
 
 Después de ejecutar el comando anterior, se debe estar en el ambiente correspondiente, en este caso denotado por `(cno-solar)` como se muestra en la siguiente figura.
@@ -74,13 +74,25 @@ Después de ejecutar el comando anterior, se debe estar en el ambiente correspon
 Ahora se instala el kernel correspondiente al ambiente recien creado.
 
 ```terminal
-> python -m ipykernel install --user --name cno-solar --display-name "cno-solar"
+python -m ipykernel install --user --name cno-solar --display-name "cno-solar"
 ```
 
 Finalmente, ejecute el siguiente comando para iniciar los cuadernos. 
 
 ```terminal
-> jupyter notebook
+jupyter notebook
+```
+
+Si desea eliminar el ambiente creado, ejecute el siguiente comando:
+
+```terminal
+conda env remove -n cno-solar
+```
+
+Luego, para eliminar el kernel `cno-solar` creado, ejecute el siguiente comando:
+
+```terminal
+jupyter kernelspec remove cno-solar
 ```
 
 ## Licencia
